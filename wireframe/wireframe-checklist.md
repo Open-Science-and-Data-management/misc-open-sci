@@ -176,7 +176,7 @@ Login
 | H2 | Home (Committee) | Committee | ✅ |
 | C1 | Approve Plan List | Committee | ✅ |
 | C2 | Proposal Review Detail (Approve/Reject) | Committee | ✅ |
-| A1 | Admin Home + User/Role Management | Admin | ☐ |
+| A1 | Admin Home + User/Role Management | Admin | ✅ |
 
 **รวม 11 wireframe** (เทียบกับ 10 ก่อนหน้า: แยก Navbar ออกมาชัดเจน + เพิ่ม Admin Home)
 

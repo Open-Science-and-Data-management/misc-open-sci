@@ -13,7 +13,7 @@
   <h1>ผังการทำงานหลัก (Main Flowchart)</h1>
   <div class="mermaid">
 flowchart TD
-    R([Researcher]) --> U[upload doc] --> MP{make plan by AI}
+    R([Researcher]) --> U["upload proposal (.docx)"] --> MP{make plan by AI}
     MP -->|yes| AI[ai gen DMP] --> D[DMP]
     MP -->|no| M[create DMP by yourself] --> D
     D --> E{edit plan}

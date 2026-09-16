@@ -1,0 +1,761 @@
+<title>ผังข้อมูล maDMP</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F1F4F3;
+    --surface: #FBFCFC;
+    --ink: #1C2B29;
+    --muted: #5F6F6B;
+    --line: #D6DEDB;
+    --accent: #0C6B5D;
+    --accent-ink: #0A5548;
+    --accent-soft: #DFEDE8;
+    --amber: #A4611B;
+  }
+  /* light theme only */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans Thai", sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 64px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: "IBM Plex Sans Thai Looped", "IBM Plex Sans Thai", sans-serif;
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.25;
+    font-weight: 700;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .lead { font-size: 18px; color: var(--muted); max-width: 640px; margin: 0 0 8px; }
+  .lead strong { color: var(--ink); }
+  h2 {
+    font-family: "IBM Plex Sans Thai Looped", "IBM Plex Sans Thai", sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    margin: 56px 0 6px;
+    text-wrap: balance;
+  }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .diagram-scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 12px 8px;
+  }
+  svg.erd { display: block; width: 100%; min-width: 880px; height: auto; }
+  .ent rect { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; transition: stroke .15s; }
+  .ent:hover rect { stroke: var(--accent); }
+  .ent .ename { font: 700 13.5px "IBM Plex Sans Thai", sans-serif; fill: var(--accent-ink); }
+  .ent .egloss { font: 400 10.5px "IBM Plex Sans Thai", sans-serif; fill: var(--muted); }
+  .ent .fdiv { stroke: var(--line); stroke-width: 1; }
+  .ent .field { font: 500 11.5px "IBM Plex Mono", monospace; fill: var(--ink); }
+  .rel { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+  .card { font: 500 11px "IBM Plex Mono", monospace; fill: var(--muted); }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    padding: 12px 4px 6px; margin: 0;
+    font-size: 13.5px; color: var(--muted);
+    list-style: none;
+  }
+  .legend b { color: var(--ink); font-weight: 600; }
+  .legend .amp { color: var(--amber); font-weight: 700; }
+  .steps { display: grid; gap: 14px; padding: 0; margin: 0; list-style: none; counter-reset: step; }
+  .steps li {
+    counter-increment: step;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px 16px 58px;
+    position: relative;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 16px; top: 18px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font: 700 14px/28px "IBM Plex Sans Thai", sans-serif;
+    text-align: center;
+  }
+  .steps h3 { margin: 0 0 4px; font-size: 16.5px; }
+  .steps h3 code { font: 600 14px "IBM Plex Mono", monospace; color: var(--accent-ink); }
+  .steps p { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps p code { font: 500 13px "IBM Plex Mono", monospace; color: var(--ink); }
+  table.analogy { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.analogy th {
+    text-align: left; font-weight: 600; font-size: 13px;
+    letter-spacing: 0.04em; color: var(--muted);
+    border-bottom: 1.5px solid var(--line);
+    padding: 8px 12px 8px 0;
+  }
+  table.analogy td { border-bottom: 1px solid var(--line); padding: 10px 12px 10px 0; vertical-align: top; }
+  table.analogy td:first-child code { font: 600 13.5px "IBM Plex Mono", monospace; color: var(--accent-ink); }
+  table.analogy td:nth-child(2) { font-weight: 600; }
+  table.analogy td:last-child { color: var(--muted); }
+  .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .rule {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .rule h3 { margin: 0 0 6px; font-size: 16px; }
+  .rule p { margin: 0; font-size: 14.5px; color: var(--muted); }
+  .rule code { font: 500 12.5px "IBM Plex Mono", monospace; color: var(--accent-ink); }
+  .ref-section h3 {
+    font-size: 17px; margin: 30px 0 8px; font-weight: 600;
+  }
+  .ref-section h3 code { font: 600 15px "IBM Plex Mono", monospace; color: var(--accent-ink); }
+  .table-scroll { overflow-x: auto; }
+  table.ref { width: 100%; min-width: 780px; border-collapse: collapse; font-size: 13.5px; }
+  table.ref th {
+    text-align: left; font-weight: 600; font-size: 12px;
+    letter-spacing: 0.04em; color: var(--muted);
+    border-bottom: 1.5px solid var(--line);
+    padding: 7px 12px 7px 0; white-space: nowrap;
+  }
+  table.ref td { border-bottom: 1px solid var(--line); padding: 8px 12px 8px 0; vertical-align: top; }
+  table.ref td:first-child code { font: 600 12.5px "IBM Plex Mono", monospace; color: var(--accent-ink); white-space: nowrap; }
+  table.ref td:nth-child(2) { color: var(--ink); }
+  table.ref td em { color: var(--muted); font-style: normal; font-size: 12.5px; }
+  table.ref td:nth-child(3), table.ref td:nth-child(4) { white-space: nowrap; color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  table.ref td:nth-child(5) { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--muted); }
+  table.ref td:nth-child(6) { color: var(--muted); }
+
+  table.ref td .en { color: var(--muted); font-size: 12px; }
+  #detail-card {
+    margin: 12px 6px 4px;
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    background: var(--accent-soft);
+    padding: 12px 16px;
+    min-height: 52px;
+  }
+  #detail-card h4 { margin: 0 0 4px; font-size: 15px; color: var(--accent-ink); }
+  #detail-card h4 code { font: 700 13.5px "IBM Plex Mono", monospace; }
+  #detail-card p { margin: 0; font-size: 14px; line-height: 1.6; }
+  #detail-card .hint { color: var(--muted); font-size: 13.5px; }
+  g.ent { cursor: help; }
+
+  .entity-summary {
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    padding: 12px 16px;
+    margin: -1px 0 34px;
+    font-size: 14.5px;
+  }
+  .entity-summary p { margin: 4px 0; color: var(--muted); }
+  .entity-summary strong { color: var(--accent-ink); font-weight: 600; }
+
+  footer {
+    margin-top: 56px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">GCWG-RDA maDMP Standard · v3.0</p>
+  <h1>ผังข้อมูล maDMP</h1>
+  <p class="lead">อ่านสเปก 318 KB ให้เหลือภาพเดียว — <strong>ทุกอย่างห้อยอยู่กับ "แฟ้ม" เดียวที่ชื่อ <code>dmp</code></strong> และทุกกล่องถูกออกแบบมาให้ <strong>เครื่องอ่านได้</strong> ไม่ใช่แค่คน</p>
+
+  <h2>ผังความสัมพันธ์ของข้อมูล (ER Diagram)</h2>
+  <p class="sub">วาดจากตาราง properties และค่า cardinality ใน README จริง — เรียงจากบนลงล่างตามชั้นของข้อมูล</p>
+
+  <div class="diagram-scroller">
+  <svg class="erd" viewBox="0 0 1240 1040" role="img" aria-label="ผัง ER ของ maDMP: dmp เป็นแกนหลัก มี contact, contributor, cost, project, dataset ผูกอยู่ โดย dataset มี distribution และ distribution มี license กับ host">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <polygon points="0 0, 10 5, 0 10" fill="var(--muted)"/>
+      </marker>
+    </defs>
+
+    <!-- ===== เส้นความสัมพันธ์ ===== -->
+    <!-- dmp ลงแถว 1 -->
+    <polyline class="rel" points="620,184 620,196"/>
+    <line class="rel" x1="120" y1="196" x2="1010" y2="196"/>
+    <line class="rel" x1="120"  y1="196" x2="120"  y2="236" marker-end="url(#ah)"/>
+    <line class="rel" x1="355"  y1="196" x2="355"  y2="236" marker-end="url(#ah)"/>
+    <line class="rel" x1="587"  y1="196" x2="587"  y2="236" marker-end="url(#ah)"/>
+    <line class="rel" x1="800"  y1="196" x2="800"  y2="236" marker-end="url(#ah)"/>
+    <line class="rel" x1="1010" y1="196" x2="1010" y2="236" marker-end="url(#ah)"/>
+    <!-- dmp → dataset -->
+    <line class="rel" x1="700" y1="196" x2="700" y2="446" marker-end="url(#ah)"/>
+    <!-- project → funding → partner -->
+    <line class="rel" x1="1010" y1="368" x2="1010" y2="446" marker-end="url(#ah)"/>
+    <line class="rel" x1="1010" y1="560" x2="1010" y2="576" marker-end="url(#ah)"/>
+    <!-- dataset → ลูก -->
+    <polyline class="rel" points="700,598 700,616"/>
+    <line class="rel" x1="195" y1="616" x2="700" y2="616"/>
+    <line class="rel" x1="195" y1="616" x2="195" y2="656" marker-end="url(#ah)"/>
+    <line class="rel" x1="425" y1="616" x2="425" y2="656" marker-end="url(#ah)"/>
+    <line class="rel" x1="700" y1="616" x2="700" y2="656" marker-end="url(#ah)"/>
+    <!-- distribution → ลูก -->
+    <polyline class="rel" points="700,806 700,836"/>
+    <line class="rel" x1="570" y1="836" x2="1050" y2="836"/>
+    <line class="rel" x1="570"  y1="836" x2="570"  y2="876" marker-end="url(#ah)"/>
+    <line class="rel" x1="800"  y1="836" x2="800"  y2="876" marker-end="url(#ah)"/>
+    <line class="rel" x1="1050" y1="836" x2="1050" y2="876" marker-end="url(#ah)"/>
+
+    <!-- ===== ป้าย cardinality ===== -->
+    <text class="card" x="128"  y="228">0..1</text>
+    <text class="card" x="363"  y="228">1</text>
+    <text class="card" x="595"  y="228">0..n</text>
+    <text class="card" x="808"  y="228">0..n</text>
+    <text class="card" x="1018" y="228">0..n</text>
+    <text class="card" x="708"  y="438">1..n</text>
+    <text class="card" x="1018" y="438">0..n</text>
+    <text class="card" x="1018" y="568">0..n</text>
+    <text class="card" x="203"  y="648">0..n</text>
+    <text class="card" x="433"  y="648">0..1</text>
+    <text class="card" x="708"  y="648">0..n</text>
+    <text class="card" x="578"  y="868">0..n</text>
+    <text class="card" x="808"  y="868">0..1</text>
+    <text class="card" x="1058" y="868">0..1·0..n</text>
+
+    <!-- ===== กล่อง ===== -->
+    <g class="ent" data-key="dmp">
+      <rect x="500" y="16" width="240" height="168" rx="7"/>
+      <text class="ename" x="514" y="38">dmp</text>
+      <text class="egloss" x="514" y="54">แฟ้มแผนจัดการข้อมูล (ปกของทุกอย่าง)</text>
+      <line class="fdiv" x1="500" x2="740" y1="64" y2="64"/>
+      <text class="field" x="514" y="84"><tspan fill="var(--amber)">•</tspan> title</text>
+      <text class="field" x="514" y="102"><tspan fill="var(--amber)">•</tspan> language</text>
+      <text class="field" x="514" y="120"><tspan fill="var(--amber)">•</tspan> created</text>
+      <text class="field" x="514" y="138"><tspan fill="var(--amber)">•</tspan> modified</text>
+      <text class="field" x="514" y="156"><tspan fill="var(--amber)">•</tspan> dmp_id</text>
+      <text class="field" x="514" y="174"><tspan fill="var(--amber)">•</tspan> ethical_issues_exist</text>
+    </g>
+
+    <g class="ent" data-key="approval">
+      <rect x="30" y="236" width="180" height="114" rx="7"/>
+      <text class="ename" x="44" y="258">approval</text>
+      <text class="egloss" x="44" y="274">การอนุมัติแฟ้ม</text>
+      <line class="fdiv" x1="30" x2="210" y1="284" y2="284"/>
+      <text class="field" x="44" y="304"><tspan fill="var(--amber)">•</tspan> status</text>
+      <text class="field" x="44" y="322">date</text>
+      <text class="field" x="44" y="340">by_name</text>
+    </g>
+
+    <g class="ent" data-key="contact">
+      <rect x="250" y="236" width="210" height="132" rx="7"/>
+      <text class="ename" x="264" y="258">contact</text>
+      <text class="egloss" x="264" y="274">ผู้ติดต่อกลาง (ต้องมี 1 คน)</text>
+      <line class="fdiv" x1="250" x2="460" y1="284" y2="284"/>
+      <text class="field" x="264" y="304"><tspan fill="var(--amber)">•</tspan> name</text>
+      <text class="field" x="264" y="322"><tspan fill="var(--amber)">•</tspan> mbox (อีเมล)</text>
+      <text class="field" x="264" y="340"><tspan fill="var(--amber)">•</tspan> contact_id</text>
+      <text class="field" x="264" y="358">affiliation</text>
+    </g>
+
+    <g class="ent" data-key="contributor">
+      <rect x="495" y="236" width="185" height="114" rx="7"/>
+      <text class="ename" x="509" y="258">contributor</text>
+      <text class="egloss" x="509" y="274">ทีมที่เกี่ยวข้อง</text>
+      <line class="fdiv" x1="495" x2="680" y1="284" y2="284"/>
+      <text class="field" x="509" y="304">name</text>
+      <text class="field" x="509" y="322">role</text>
+      <text class="field" x="509" y="340">contributor_id</text>
+    </g>
+
+    <g class="ent" data-key="cost">
+      <rect x="720" y="236" width="160" height="114" rx="7"/>
+      <text class="ename" x="734" y="258">cost</text>
+      <text class="egloss" x="734" y="274">ค่าใช้จ่าย</text>
+      <line class="fdiv" x1="720" x2="880" y1="284" y2="284"/>
+      <text class="field" x="734" y="304">title</text>
+      <text class="field" x="734" y="322">value</text>
+      <text class="field" x="734" y="340">currency_code</text>
+    </g>
+
+    <g class="ent" data-key="project">
+      <rect x="920" y="236" width="180" height="132" rx="7"/>
+      <text class="ename" x="934" y="258">project</text>
+      <text class="egloss" x="934" y="274">โครงการวิจัย</text>
+      <line class="fdiv" x1="920" x2="1100" y1="284" y2="284"/>
+      <text class="field" x="934" y="304">title</text>
+      <text class="field" x="934" y="322">start / end</text>
+      <text class="field" x="934" y="340">project_id</text>
+      <text class="field" x="934" y="358">description</text>
+    </g>
+
+    <g class="ent" data-key="dataset">
+      <rect x="560" y="446" width="280" height="152" rx="7"/>
+      <text class="ename" x="574" y="468">dataset</text>
+      <text class="egloss" x="574" y="484">ชุดข้อมูล (ต้องมีอย่างน้อย 1 ชุด)</text>
+      <line class="fdiv" x1="560" x2="840" y1="494" y2="494"/>
+      <text class="field" x="574" y="514"><tspan fill="var(--amber)">•</tspan> title</text>
+      <text class="field" x="574" y="532"><tspan fill="var(--amber)">•</tspan> dataset_id</text>
+      <text class="field" x="574" y="550"><tspan fill="var(--amber)">•</tspan> personal_data (ใช่/ไม่/ไม่รู้)</text>
+      <text class="field" x="574" y="568"><tspan fill="var(--amber)">•</tspan> sensitive_data (ใช่/ไม่/ไม่รู้)</text>
+      <text class="field" x="574" y="586">type · language · issued</text>
+    </g>
+
+    <g class="ent" data-key="funding">
+      <rect x="920" y="446" width="180" height="114" rx="7"/>
+      <text class="ename" x="934" y="468">funding</text>
+      <text class="egloss" x="934" y="484">แหล่งทุน</text>
+      <line class="fdiv" x1="920" x2="1100" y1="494" y2="494"/>
+      <text class="field" x="934" y="514">funder_id</text>
+      <text class="field" x="934" y="532">grant_id</text>
+      <text class="field" x="934" y="550">funding_status</text>
+    </g>
+
+    <g class="ent" data-key="partner_organization">
+      <rect x="920" y="576" width="180" height="132" rx="7"/>
+      <text class="ename" x="934" y="598">partner_organization</text>
+      <text class="egloss" x="934" y="614">หน่วยงานร่วมงาน</text>
+      <line class="fdiv" x1="920" x2="1100" y1="624" y2="624"/>
+      <text class="field" x="934" y="644"><tspan fill="var(--amber)">•</tspan> name</text>
+      <text class="field" x="934" y="662">partner_org_id</text>
+      <text class="field" x="934" y="680">agreement (type, url)</text>
+    </g>
+
+    <g class="ent" data-key="technical_resource">
+      <rect x="85" y="656" width="220" height="132" rx="7"/>
+      <text class="ename" x="99" y="678">technical_resource</text>
+      <text class="egloss" x="99" y="694">เครื่องมือ/ซอฟต์แวร์ที่ใช้</text>
+      <line class="fdiv" x1="85" x2="305" y1="704" y2="704"/>
+      <text class="field" x="99" y="724">name</text>
+      <text class="field" x="99" y="742">description</text>
+      <text class="field" x="99" y="760">software (ชื่อ, license)</text>
+      <text class="field" x="99" y="778">hardware_requirements</text>
+    </g>
+
+    <g class="ent" data-key="dataset_extras">
+      <rect x="320" y="656" width="210" height="168" rx="7"/>
+      <text class="ename" x="334" y="678">รายละเอียดอื่น ๆ</text>
+      <text class="egloss" x="334" y="694">กลุ่มย่อยเพิ่มเติมของ dataset</text>
+      <line class="fdiv" x1="320" x2="530" y1="704" y2="704"/>
+      <text class="field" x="334" y="724">collection (การเก็บข้อมูล)</text>
+      <text class="field" x="334" y="742">metadata · subject</text>
+      <text class="field" x="334" y="760">keyword</text>
+      <text class="field" x="334" y="778">security_and_privacy</text>
+      <text class="field" x="334" y="796">disposition_planning</text>
+      <text class="field" x="334" y="814">disposition_action</text>
+    </g>
+
+    <g class="ent" data-key="distribution">
+      <rect x="560" y="656" width="280" height="150" rx="7"/>
+      <text class="ename" x="574" y="678">distribution</text>
+      <text class="egloss" x="574" y="694">ไฟล์ที่แจกจ่ายจริง 1 รูปแบบ</text>
+      <line class="fdiv" x1="560" x2="840" y1="704" y2="704"/>
+      <text class="field" x="574" y="724"><tspan fill="var(--amber)">•</tspan> title</text>
+      <text class="field" x="574" y="742">format (CSV, JSON, …)</text>
+      <text class="field" x="574" y="760">byte_size</text>
+      <text class="field" x="574" y="778">data_access (open/…)</text>
+      <text class="field" x="574" y="796">distribution_id</text>
+    </g>
+
+    <g class="ent" data-key="license">
+      <rect x="480" y="876" width="180" height="96" rx="7"/>
+      <text class="ename" x="494" y="898">license</text>
+      <text class="egloss" x="494" y="914">สัญญาอนุญาต</text>
+      <line class="fdiv" x1="480" x2="660" y1="924" y2="924"/>
+      <text class="field" x="494" y="944">license_ref</text>
+      <text class="field" x="494" y="962">start_date</text>
+    </g>
+
+    <g class="ent" data-key="host">
+      <rect x="700" y="876" width="200" height="132" rx="7"/>
+      <text class="ename" x="714" y="898">host</text>
+      <text class="egloss" x="714" y="914">คลัง/เซิร์ฟเวอร์ที่เก็บ</text>
+      <line class="fdiv" x1="700" x2="900" y1="924" y2="924"/>
+      <text class="field" x="714" y="944">title · url</text>
+      <text class="field" x="714" y="962">backup_frequency</text>
+      <text class="field" x="714" y="980">certified_with</text>
+      <text class="field" x="714" y="998">storage_type</text>
+    </g>
+
+    <g class="ent" data-key="distribution_extras">
+      <rect x="940" y="876" width="220" height="114" rx="7"/>
+      <text class="ename" x="954" y="898">รายละเอียดอื่น ๆ</text>
+      <text class="egloss" x="954" y="914">กลุ่มย่อยเพิ่มเติมของ distribution</text>
+      <line class="fdiv" x1="940" x2="1160" y1="924" y2="924"/>
+      <text class="field" x="954" y="944">version_history</text>
+      <text class="field" x="954" y="962">online_service</text>
+      <text class="field" x="954" y="980">data_integrity (checksum)</text>
+    </g>
+  </svg>
+  </div>
+
+  <div id="detail-card" aria-live="polite">
+    <p class="hint">ชี้เมาส์ (หรือแตะ) ที่กล่องบนผัง → ความเห็นของคนออกแบบฐานข้อมูลเรื่องตารางนั้น ๆ</p>
+  </div>
+
+  <ul class="legend">
+    <li><span class="amp">•</span> = ช่อง <b>required</b> (บังคับกรอก)</li>
+    <li><b>1</b> = ต้องมี 1 อัน</li>
+    <li><b>0..n</b> = ไม่มีก็ได้ / มีกี่อันก็ได้</li>
+    <li><b>0..1</b> = ไม่มีก็ได้ แต่มีได้แค่อันเดียว</li>
+  </ul>
+
+  <h2>มันทำงานยังไง — ไล่ตามผังทีละชั้น</h2>
+  <p class="sub">ลองนึกว่ามันคือ "แฟ้มโครงการวิจัย 1 เล่ม" ที่อยู่ในรูปแบบที่คอมพิวเตอร์อ่านออก</p>
+
+  <ol class="steps">
+    <li>
+      <h3>เริ่มที่แฟ้มปก: <code>dmp</code></h3>
+      <p>ทุกอย่างอยู่ใน dmp แฟ้มเดียว — ชื่อแผน, ภาษา, วันที่สร้าง/แก้ไข, ตัวตนของแฟ้ม (<code>dmp_id</code>), มีปัญหาจริยธรรมไหม และสถานะอนุมัติ (<code>approval</code>) แถมมาติดกับปกเลย</p>
+    </li>
+    <li>
+      <h3>ชั้นคน: <code>contact</code> กับ <code>contributor</code></h3>
+      <p>แฟ้ม 1 เล่ม มี <strong>ผู้ติดต่อ 1 คนเท่านั้น</strong> (cardinality = 1) แต่มีทีมงาน (<code>contributor</code>) กี่คนก็ได้ ทุกคนมี "ID อ้างอิง" ของตัวเอง เช่น ORCID และสังกัด (<code>affiliation</code>) ได้หลายที่</p>
+    </li>
+    <li>
+      <h3>ชั้นข้อมูล: <code>dataset</code> → <code>distribution</code></h3>
+      <p>ตรงนี้คือหัวใจ — <code>dataset</code> คือ <strong>"ข้อมูลในความคิด"</strong> ยังไม่ใช่ไฟล์ (ต้องมีอย่างน้อย 1 ชุด) ส่วน <code>distribution</code> คือ <strong>ไฟล์จริงที่เอาออกแจก</strong> — ข้อมูล 1 ชุด แจกได้หลายรูปแบบ (CSV หนึ่งอัน, JSON หนึ่งอัน, เวอร์ชันไม่ระบุตัวตนอีกอัน) แต่ละไฟล์มี <code>license</code> กับ <code>host</code> (ตู้เซฟที่เก็บ) ของตัวเอง</p>
+    </li>
+    <li>
+      <h3>ชั้นโครงการและเงิน: <code>project</code> → <code>funding</code> / <code>partner_organization</code></h3>
+      <p>แฟ้มผูกกับโครงการได้หลายโครงการ แต่ละโครงการมีแหล่งทุนกับหน่วยงานร่วมงานเป็นของตัวเอง พร้อมสัญญาร่วมงาน (<code>agreement</code> — MOU, สัญญาแบ่งเงิน ฯลฯ) แนบไว้</p>
+    </li>
+  </ol>
+
+  <h2>จำง่าย ๆ ด้วยตารางนี้</h2>
+  <table class="analogy">
+    <thead><tr><th>ศัพท์ในผัง</th><th>เทียบกับแฟ้มโครงการ</th><th>กฎความสัมพันธ์</th></tr></thead>
+    <tbody>
+      <tr><td><code>dmp</code></td><td>ตัวแฟ้ม 1 เล่ม</td><td>แกนกลาง — ทุกกล่องห้อยอยู่ใต้มัน</td></tr>
+      <tr><td><code>contact</code> · <code>contributor</code></td><td>เบอร์ติดต่อ · ทีมทำงาน</td><td>ติดต่อได้ 1 คน (บังคับ) · ทีมกี่คนก็ได้</td></tr>
+      <tr><td><code>dataset</code></td><td>ข้อมูลที่วางแผนไว้</td><td>ต้องมีอย่างน้อย 1 ชุด (บังคับ)</td></tr>
+      <tr><td><code>distribution</code></td><td>ไฟล์ที่เอาออกแจกจริง</td><td>1 ชุดข้อมูล → ได้หลายไฟล์</td></tr>
+      <tr><td><code>license</code> · <code>host</code></td><td>ปกสัญญา · ตู้เซฟที่เก็บ</td><td>ผูกกับ "ไฟล์" ไม่ใช่ "ชุดข้อมูล"</td></tr>
+      <tr><td><code>project</code> · <code>funding</code></td><td>โครงการ · แหล่งเงินทุน</td><td>ผูกกับแฟ้มได้หลายรายการ</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3 กฎที่ทำให้ "เครื่องอ่านได้"</h2>
+  <div class="rules">
+    <div class="rule">
+      <h3>บังคับน้อย แต่บังคับชัด</h3>
+      <p>เริ่มต้นมีแค่ <strong>13 คำถาม</strong>ที่ต้องตอบ (ชื่อผู้ติดต่อ, ชื่อ dataset, มีข้อมูลส่วนบุคคลไหม ฯลฯ) ที่เหลือเป็น optional — แล้ว<b>ค่อยบังคับเพิ่ม</b>ตามที่โครงการเดินไปถึงช่วงไหนของชีวิตข้อมูล</p>
+    </div>
+    <div class="rule">
+      <h3>คำตอบต้องเลือกจากลิสต์</h3>
+      <p>หลายช่องเป็น <code>controlled vocabulary</code> — เช่น การเข้าถึงตอบได้แค่ <code>open / shared / closed</code> เครื่องเลยไม่มีทางตีความคำตอบผิด</p>
+    </div>
+    <div class="rule">
+      <h3>ID ใช้แม่แบบเดียวกันทั้งเล่ม</h3>
+      <p><code>dmp_id</code>, <code>dataset_id</code>, <code>contact_id</code>… ทุกตัวเป็นกล่องสำเร็จรูปเหมือนกัน: <code>identifier + type + registry_name</code> — เขียนโค้ดอ่านครั้งเดียว ใช้ได้กับทุกช่อง</p>
+    </div>
+  </div>
+
+  <h2>ตารางอ้างอิงฟิลด์ราย entity</h2>
+  <p class="sub">สรุปจากตาราง Properties ใน README โดยตรง — คำอธิบาย, เงื่อนไขบังคับ, cardinality, ตัวอย่าง และคำถามฉบับผู้ใช้ (เลื่อนตารางได้ในแนวนอน)</p>
+  <div class="ref-section">
+<h3><code>dmp</code> — แฟ้มหลัก (root)</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ชื่อของแผนนี้ — ใช้ค้นหาและแยกแฟ้มออกจากกัน ต้องมีเสมอ<br><span class="en">Title of the DMP</span></td><td>required</td><td>1</td><td>Data Management Plan of the most exciting project ever</td><td>What is the title of this maDMP?</td></tr>
+<tr><td><code>description</code></td><td>เล่ายาว ๆ ว่าแผนนี้ครอบคลุมเรื่องอะไร อ่านก่อนแล้วเข้าใจภาพรวม<br><span class="en">To provide any free-form text information on the Data Management Plan (maDMP). It can be a formal statement describing how…</span></td><td>optional</td><td>0..1</td><td>We&#x27;re finally get our data under control.</td><td>Describe the data management plan.</td></tr>
+<tr><td><code>language</code></td><td>ภาษาที่ใช้เขียนแผน เป็นรหัสมาตรฐาน ISO เช่น th, en — เครื่องจัดการกรอง/แปลได้<br><em>เลือกได้เฉพาะ: Use ISO 639-3 codes</em><br><span class="en">Language of the DMP expressed using ISO 639-3</span></td><td>required</td><td>1</td><td>eng</td><td>What language is the maDMP written in?</td></tr>
+<tr><td><code>created</code></td><td>วันที่สร้างแฟ้ม เครื่องใช้เรียงว่าแผนไหนเก่า/ใหม่<br><span class="en">Date and time of the first version of the maDMP. This date must not be changed in subsequent maDMPs. Each maDMP has a &quot;Created&quot;…</span></td><td>required</td><td>1</td><td>2019-03-13T13:13:00Z</td><td>When was the first version of the maDMP created?</td></tr>
+<tr><td><code>modified</code></td><td>วันที่แก้ล่าสุด — ทุกครั้งที่แก้ต้องขยับ เครื่องจึงรู้ว่าเวอร์ชันไหนทันสุด สำคัญมากกับการซิงก์ระหว่างระบบ<br><span class="en">Indicates maDMP version, so must be set each time the maDMP is modified. Dates can be used to indicate past and planned actions.…</span></td><td>required</td><td>1</td><td>2019-03-13T13:13:00Z</td><td>When was the maDMP last modified?</td></tr>
+<tr><td><code>dmp_id</code></td><td>ตัวตนประจำแฟ้ม เช่น DOI — ระบบอื่นชี้มาหาแฟ้มนี้ได้แม้ย้ายที่เก็บ<br><span class="en">Identifier for the DMP itself</span></td><td>required</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>access</code></td><td>ใครเปิดดูแผนนี้ได้บ้าง ต้องเลือกจากลิสต์เท่านั้น: open (สาธารณะ) / shared (เฉพาะเกี่ยวข้อง) / closed<br><em>เลือกได้เฉพาะ: open, shared, closed</em><br><span class="en">OPEN ACCESS: available to anyone based on an open license (e.g., CC0, CC-BY, Open Government License). SHARED ACCESS: Public…</span></td><td>optional</td><td>0..1</td><td>open</td><td>Is access to the maDMP open, shared, or closed?</td></tr>
+<tr><td><code>schema_version</code></td><td>บอกว่าเขียนตามมาตรฐานเวอร์ชันไหน — พอมาตรฐานอัปเกรด เครื่องจะได้ไม่อ่านแฟ้มเก่าด้วยกฎใหม่<br><span class="en">DMP schema version</span></td><td>optional</td><td>0..1</td><td>v2.6</td><td>Which maDMP metadata schema version was used when creating this maDMP?</td></tr>
+<tr><td><code>protection_level</code></td><td>ระดับการป้องกันเอกสารนี้ตามนิรนามของหน่วยงาน (ปกติ/ต้องป้องกันพิเศษ)<br><em>เลือกได้เฉพาะ: unknown, not protected, Protected A, Protected B, Protected C, other</em><br><span class="en">Protected information is not classified. Information is &quot;protected&quot; when unauthorized disclosure could reasonably be expected to…</span></td><td>optional</td><td>0..1</td><td>protected A</td><td>What is the protection level for the maDMP?</td></tr>
+<tr><td><code>security_classification_level</code></td><td>ระดับความลับ เช่น ไม่ลับ/ลับ — กำหนดว่าใครเข้าถึงได้<br><em>เลือกได้เฉพาะ: unclassified, restricted, confidential, secret, top secret, other, unknown</em><br><span class="en">Security classification that designates the level of protection against access the DMP requires when unauthorized disclosure…</span></td><td>optional</td><td>0..1</td><td>unclassified</td><td>What is the security classification of the maDMP?</td></tr>
+<tr><td><code>ethical_issues_exist</code></td><td>มีประเด็นจริยธรรมไหม ตอบได้แค่ yes / no / unknown<br><em>เลือกได้เฉพาะ: yes, no, unknown</em><br><span class="en">To indicate whether there are ethical issues related to these data. It is the responsibility of the researcher or data steward to…</span></td><td>required</td><td>1</td><td>yes</td><td>Do ethical issues exist?</td></tr>
+<tr><td><code>ethical_issues_description</code></td><td>ถ้าตอบว่ามี ต้องเล่าว่าคืออะไรบ้าง<br><span class="en">To describe any existing or potential ethical issues that are not captured in the following related fields: dmp/protection_level,…</span></td><td>optional</td><td>0..1</td><td>There are ethical issues because...</td><td>Describe any existing or potential ethical issues.</td></tr>
+<tr><td><code>ethical_issues_report</code></td><td>ลิงก์ไปไฟล์รายงานจริยธรรม (ถ้ามี)<br><span class="en">To indicate, for example, where a protocol from a meeting with an ethical committee can be found, or an IRB (Institutional Review…</span></td><td>optional</td><td>0..1</td><td>http://report.location</td><td>Provide a link to an ethical issues report such as, for examplem and IRB (Institutional Review Board) report.</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> เป็น "ปกแฟ้ม" ของทุกอย่าง — ทุกข้อมูลในแผนต้องอ้างกลับมาที่กล่องนี้เสมอ</p>
+<p><strong>ได้อะไรจากมัน:</strong> รู้ทันทีว่าแผนนี้ชื่ออะไร ภาษาอะไร สร้างเมื่อไหร่ แก้ล่าสุดเมื่อไหร่ และมีหมายเลขประจำตัวให้ระบบอื่นชี้มาหาได้</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ต้องมี ขาดไม่ได้ — ถ้าไม่มีตัวนี้ ข้อมูลก็เป็นแค่กองกระดาษที่ไม่มีใครรู้ว่าเป็นแผนของใคร เวอร์ชันไหน</p>
+</div>
+<h3><code>approval</code> — การอนุมัติแฟ้ม</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>status</code></td><td>สถานะการอนุมัติ เลือกจากลิสต์: approved / rejected / submitted / not submitted / not applicable / unknown<br><em>เลือกได้เฉพาะ: approved, rejected, submitted, not submitted, not applicable, unknown</em><br><span class="en">Approval status for the DMP</span></td><td>required WHEN</td><td>1</td><td>approved</td><td>What is the maDMP approval status?</td></tr>
+<tr><td><code>date</code></td><td>วันที่อนุมัติ — จะบังคับกรอกก็ต่อเมื่อสถานะเป็น approved/rejected/submitted<br><span class="en">DMP Approval date. Encoded using the relevant ISO 8601 Date compliant string</span></td><td>required IF</td><td>0..1</td><td>2023-12-31</td><td>What was the date of the approval action?</td></tr>
+<tr><td><code>by_name</code></td><td>ชื่อคนอนุมัติ — เก็บหลักฐานว่าใครกดผ่าน<br><span class="en">Name of the person who approved the maDMP</span></td><td>required IF</td><td>0..1</td><td>Jean Dupont</td><td>What is the name of the approval person?</td></tr>
+<tr><td><code>by_position</code></td><td>ตำแหน่งของคนอนุมัติ ให้รู้ว่าอำนาจอนุมัติมาจากใคร<br><span class="en">Job position of the person who approved the maDMP</span></td><td>required IF</td><td>0..1</td><td>Director</td><td>What is the position of the approval person?</td></tr>
+<tr><td><code>by_mbox</code></td><td>อีเมลคนอนุมัติ ไว้ยืนยันตัวตน<br><span class="en">Email of the person who approved the maDMP</span></td><td>optional</td><td>0..1</td><td>jean.dupont@email.com</td><td>What is the approval person&#x27;s email?</td></tr>
+<tr><td><code>description</code></td><td>หมายเหตุเพิ่มเติมเรื่องการอนุมัติ เช่น เงื่อนไขที่แนบมา<br><span class="en">To provide any free-form text information on the approval for the DMP</span></td><td>optional</td><td>0..1</td><td>Need to respond to all required fields</td><td>Provide a description of the approval.</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดผลการอนุมัติแผนกับตัวคนอนุมัติไว้เป็นหลักฐาน</p>
+<p><strong>ได้อะไรจากมัน:</strong> มีข้อโต้แย้งเมื่อไหร่ ชี้ได้ว่าใครกดผ่าน วันไหน ตำแหน่งอะไร</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี แต่ถ้าระบบของเพื่อนมีระบบอนุมัติเองอยู่แล้ว อย่าเก็บซ้ำสองที่ — ให้มีที่เดียวที่เป็นความจริง</p>
+</div>
+<h3><code>contact</code> — ผู้ติดต่อกลาง (มีได้ 1 คน)</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>ชื่อผู้ติดต่อ (คนหรือหน่วยงาน) — คนที่ถามเรื่องแผนนี้ได้<br><span class="en">Name of the contact person or organization</span></td><td>required</td><td>1</td><td>Winnie Pooh</td><td>What is contact person&#x27;s name?</td></tr>
+<tr><td><code>mbox</code></td><td>อีเมลผู้ติดต่อ — บังคับ เพราะระบบจะใช้ติดต่ออัตโนมัติ<br><span class="en">E-mail address</span></td><td>required</td><td>1</td><td>xxxxxx@canada.ca</td><td>What is contact person&#x27;s e-mail address?</td></tr>
+<tr><td><code>contact_id</code></td><td>ตัวตนถาวรของผู้ติดต่อ เช่น ORCID กันชื่อซ้ำสับสน<br><span class="en">Persistent identifier associated with the contact</span></td><td>required</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>role</code></td><td>เขาเป็นอะไรในโครงการ เลือกจากลิสต์ เช่น pointOfContact, owner<br><em>เลือกได้เฉพาะ: resourceProvider, custodian, owner, user, distributor, originator, pointOfContact, principalInvestigator,…</em><br><span class="en">Role of the reponsible party.</span></td><td>optional</td><td>0..1</td><td>Contact</td><td>What is the role or function of the contact person or organization?</td></tr>
+<tr><td><code>affiliation</code></td><td>หน่วยงานที่สังกัด ใส่ได้หลายที่<br><span class="en">To provide information about the organization the contact is affiliated with</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>city</code></td><td>เมืองที่ตั้งอยู่<br><span class="en">City where the contact is located</span></td><td>optional</td><td>0..1</td><td>Sherbrooke</td><td>In which city is the contact located?</td></tr>
+<tr><td><code>position</code></td><td>ตำแหน่งงาน ถ้าเป็นบุคคล<br><span class="en">Position of the contact if contact is a person.</span></td><td>optional</td><td>0..1</td><td>Senior Systems Scientist</td><td>What is the position of the contact person?</td></tr>
+<tr><td><code>telephone</code></td><td>เบอร์โทร ใส่ได้หลายเบอร์<br><span class="en">Telephone number by which individuals can speak to the responsible organization or individual</span></td><td>optional</td><td>0..n</td><td>1 (819) 5645600</td><td>What is the contact person&#x27;s telephone number?</td></tr>
+<tr><td><code>postal_zip_code</code></td><td>รหัสไปรษณีย์<br><span class="en">ZIP or other postal code of the location</span></td><td>optional</td><td>0..1</td><td>J1J 2E8</td><td>What is the contact person&#x27;s postal code or zip code?</td></tr>
+<tr><td><code>url</code></td><td>ลิงก์ข้อมูลติดต่อออนไลน์ เช่น หน้า profile<br><span class="en">On-line information that can be used to contact the responsible individual or organization. This element should be expressed as a…</span></td><td>optional</td><td>0..1</td><td>www.geogratis.gc.ca</td><td>What is the URL that links to the contact details of the responsible person or organization?</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> มีคนที่ติดต่อถามได้ 1 คนต่อแผน แบบระบบหาเจอเองได้</p>
+<p><strong>ได้อะไรจากมัน:</strong> ระบบส่งอีเมลแจ้งเตือนอัตโนมัติหาเขาได้ ไม่ต้องมีคนมานั่งหาว่าจะถามใคร</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี แต่เก็บ "ข้อมูลคน" ไว้ที่เดียวพอ — คนคนเดียวที่เป็นผู้ติดต่อของหลายแผน ถ้าพิมพ์ซ้ำทุกแผน เขาเปลี่ยนอีเมลเมื่อไหร่ต้องไล่แก้ทุกที่</p>
+</div>
+<h3><code>contributor</code> — ผู้ร่วมงาน</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>ชื่อผู้ร่วมงาน<br><span class="en">Name of the contributor</span></td><td>required WHEN</td><td>1</td><td>Christopher Robin</td><td>What is the contributor&#x27;s name?</td></tr>
+<tr><td><code>mbox</code></td><td>อีเมลผู้ร่วมงาน<br><span class="en">To provide an E-mail address of the contributor</span></td><td>optional</td><td>0..1</td><td>yyyyyy@canada.ca</td><td>What is the contributor&#x27;s email?</td></tr>
+<tr><td><code>role</code></td><td>บทบาทในการจัดการข้อมูล เลือกจากลิสต์ DataCite เช่น DataCurator, DataCollector<br><span class="en">To specify contributors’ role(s) within the data management process, including planning. It is recommended to list contributor…</span></td><td>required WHEN</td><td>1..n</td><td>Data steward</td><td>What is the contributor&#x27;s role?</td></tr>
+<tr><td><code>contributor_id</code></td><td>ตัวตนถาวรของผู้ร่วมงาน เช่น ORCID<br><span class="en">Persistent identifier associated with the contributor</span></td><td>required WHEN</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>affiliation</code></td><td>หน่วยงานที่สังกัด<br><span class="en">Provide information about the organization the contributor is affiliated with</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>position</code></td><td>ตำแหน่งงาน<br><span class="en">Role or position of the contributor or cited responsible party</span></td><td>optional</td><td>0..1</td><td>project manager</td><td>What is the position of the contributor or cited responsible party?</td></tr>
+<tr><td><code>city</code></td><td>เมืองที่ตั้งอยู่<br><span class="en">City where the contributor is located</span></td><td>optional</td><td>0..1</td><td>Montreal</td><td>In which city is the contributor or cited responsible party located?</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดทีมงานว่าใครอยู่บ้าง ใครทำบทบาทไหน</p>
+<p><strong>ได้อะไรจากมัน:</strong> รู้ทันทีว่าจะถามเรื่องการเก็บข้อมูลกับใคร เรื่องวิเคราะห์กับใคร ไม่ต้องเดา</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี — และเคล็ดลับ: มันกับ contact เป็นเรื่องเดียวกัน ต่างแค่บทบาท ถ้าเพื่อนออกแบบเอง ทำเป็นตาราง "คน" เดียวแล้วให้บทบาทเป็นข้อมูลในตารางจะง่ายกว่า</p>
+</div>
+<h3><code>cost</code> — ค่าใช้จ่าย</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ค่าใช้จ่ายอะไร เช่น ค่าเก็บข้อมูล ค่าคลังข้อมูล<br><span class="en">To give a title or name to identify the specific cost that is described in this section</span></td><td>required WHEN</td><td>1</td><td>Cloud storage and software</td><td>Provide a title for the costs.</td></tr>
+<tr><td><code>value</code></td><td>จำนวนเงิน เป็นตัวเลขล้วน แยกจากสกุลเงิน<br><span class="en">Cost value in the specified currency</span></td><td>optional</td><td>0..1</td><td>1,000,000</td><td>What is the total cost amount?</td></tr>
+<tr><td><code>currency_code</code></td><td>สกุลเงินเป็นรหัส ISO เช่น THB, CAD — แยกไว้ต่างหากเพื่อให้เครื่องรวมงบได้<br><em>เลือกได้เฉพาะ: Use ISO 4217 codes</em><br><span class="en">Allowed values defined by ISO 4217.</span></td><td>required IF</td><td>0..1</td><td>USD</td><td>What is the currency for the cost amount?</td></tr>
+<tr><td><code>description</code></td><td>อธิบายรายละเอียดค่าใช้จ่าย<br><span class="en">To provide additional details about a cost, including specifying which activities or resources it relates to, such as making data…</span></td><td>optional</td><td>0..1</td><td>Storage and backup costs are calculated based on a 12-month…</td><td>Describe the costs.</td></tr>
+<tr><td><code>cost_documentation</code></td><td>ลิงก์เอกสารประกอบ เช่น ใบเสนอราคา<br><span class="en">Any external material documenting the costing details.</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดว่าการจัดการข้อมูลนี้ต้องใช้เงินเท่าไหร่ รายการไหนบ้าง</p>
+<p><strong>ได้อะไรจากมัน:</strong> ตอนขอทุนหรือตั้งงบปีถัดไป มีตัวเลขยกมาอ้างได้เลย ไม่ต้องเดาจากความรู้สึก</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> มีก็ดี ไม่ใช่ของบังคับทุกระบบ — หน่วยงานที่งบไม่ไหลข้ามแผน อาจตัดทิ้งได้โดยไม่เสียอะไร</p>
+</div>
+<h3><code>project</code> — โครงการวิจัย</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ชื่อโครงการ<br><span class="en">Project title</span></td><td>required WHEN</td><td>1</td><td>Mission to the sun.</td><td>What is the project title?</td></tr>
+<tr><td><code>description</code></td><td>รายละเอียดโครงการ<br><span class="en">Project abstract providing an overview of the project&#x27;s goals and scope</span></td><td>optional</td><td>0..1</td><td>This project aims to analyze the impact of urbanization on…</td><td>Describe the project.</td></tr>
+<tr><td><code>start</code></td><td>วันเริ่มโครงการ<br><span class="en">Project start date. Encoded using the relevant ISO 8601 Date compliant string</span></td><td>optional</td><td>0..1</td><td>2023-07-20</td><td>What is the project start date?</td></tr>
+<tr><td><code>end</code></td><td>วันจบโครงการ — เครื่องใช้คำนวณว่าแผนต้องถูกทบทวนช่วงไหน<br><span class="en">Project end date. Encoded using the relevant ISO 8601 Date compliant string</span></td><td>optional</td><td>0..1</td><td>2025-12-31</td><td>When is the planned end date of the project, or when did the project end?</td></tr>
+<tr><td><code>project_id</code></td><td>รหัสโครงการในระบบของหน่วยงาน ใช้โยงกลับระบบบริหารโครงการ<br><span class="en">Identifier associated with the project</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>funding</code></td><td>ทุนที่ผูกกับโครงการ ใส่ได้หลายทุน<br><span class="en">Funding related with a project</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>partner_organization</code></td><td>หน่วยงานร่วมงาน ใส่ได้หลายฝ่าย<br><span class="en">Partner organization</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> ผูกแผนข้อมูลเข้ากับโครงการวิจัยจริง</p>
+<p><strong>ได้อะไรจากมัน:</strong> ใช้รหัสโครงการเชื่อมกับระบบจัดการโครงการที่หน่วยงานมีอยู่แล้ว ไม่ต้องกรอกข้อมูลโครงการซ้ำสองระบบ</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี — มันคือสะพานที่ทำให้แผนข้อมูลไม่ใช่เอกสารลอย ๆ ที่จบโครงการเมื่อไหร่ก็ลืมไปเลย</p>
+</div>
+<h3><code>funding</code> — แหล่งทุน</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>funder_id</code></td><td>ตัวตนผู้ให้ทุน อ้างจากทะเบียนกลาง (เช่น Crossref Funder Registry)<br><span class="en">Identifier associated with the project funder</span></td><td>required WHEN</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>grant_id</code></td><td>เลขที่ทุน — ตัวสำคัญสุด เอาไว้โยงกับฐานข้อมูลทุนอัตโนมัติ<br><span class="en">Identifier associated with the grant</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+<tr><td><code>funding_status</code></td><td>สถานะทุน: planned / applied / granted / rejected<br><em>เลือกได้เฉพาะ: planned, applied, granted, rejected, not applicable</em><br><span class="en">To express different phases of project lifecycle.</span></td><td>optional</td><td>0..1</td><td>planned</td><td>What is the funding status?</td></tr>
+<tr><td><code>source</code></td><td>ระบบต้นทางที่ข้อมูลทุนนี้มาจากไหน<br><span class="en">Project funding source</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดว่าโครงการนี้ใครอุดหนุนเงิน ทุนไหน เลขที่อะไร</p>
+<p><strong>ได้อะไรจากมัน:</strong> ถูกถามว่า "ข้อมูลชุดนี้มาจากทุนไหน" ตอบได้ทันที และทำรายงานให้ผู้ให้ทุนได้โดยไม่ต้องไล่อีเมลถามคน</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมีมาก — เก็บแค่เลขที่ทุนกับตัวตนผู้ให้ทุนพอ อย่าพิมพ์ชื่อหน่วยงานเอง ให้ชี้ไปที่ทะเบียนกลางกันพิมพ์ไม่เหมือนกัน</p>
+</div>
+<h3><code>partner_organization</code> — หน่วยงานร่วมงาน</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>ชื่อหน่วยงานร่วมงาน<br><span class="en">Name of partner organization.</span></td><td>optional</td><td>0..1</td><td>Stargazers</td><td>What is the partner organization&#x27;s name?</td></tr>
+<tr><td><code>partner_organization_id</code></td><td>ตัวตนถาวรของหน่วยงาน กันชื่อซ้ำ/เปลี่ยนชื่อ<br><span class="en">Unique identifier assigned to represent partner organization.</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+<tr><td><code>agreement</code></td><td>สัญญาร่วมงาน — ระบุประเภท (MOU, MOA, สัญญาแบ่งเงิน ฯลฯ) และลิงก์ดาวน์โหลดไฟล์<br><span class="en">Partner organization agreement</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดคู่ร่วมงาน สัญญาอะไร ไฟล์สัญญาอยู่ไหน</p>
+<p><strong>ได้อะไรจากมัน:</strong> ก่อนแชร์ข้อมูลออกไปข้างนอก เปิดดูได้ทันทีว่าเราเซ็นสัญญาอะไรไว้บ้าง ห้าม-อนุญาตอะไร</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> มีถ้ามีคู่สัญญาเยอะ — ระวังจุดเดียว: สัญญา 1 ฉบับที่คลุมหลายหน่วยงาน ต้องอัปไฟล์ซ้ำหลายแถว ถ้าเจอบ่อยให้ยก "สัญญา" ขึ้นเป็นตารางของตัวเอง</p>
+</div>
+<h3><code>dataset</code> — ชุดข้อมูล (บังคับ ≥1 ชุด)</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ชื่อชุดข้อมูล — บังคับ ทุกแฟ้มต้องมีข้อมูลอย่างน้อย 1 ชุด<br><span class="en">Title is a property in both Dataset and Distribution, in compliance with W3C DCAT. In some cases these might be identical, but in…</span></td><td>required</td><td>1</td><td>fast sun images</td><td>What is the title of this dataset?</td></tr>
+<tr><td><code>description</code></td><td>อธิบายว่าข้อมูลชุดนี้คืออะไร เก็บอะไรไว้<br><span class="en">Description is a property in both Dataset and Distribution, in compliance with W3C DCAT. In some cases these might be identical,…</span></td><td>optional</td><td>0..1</td><td>The dataset includes detailed measurements of temperature,…</td><td>Describe the dataset.</td></tr>
+<tr><td><code>dataset_id</code></td><td>ตัวตนชุดข้อมูล เช่น DOI — บังคับ เพื่อให้ชี้มาหาชุดนี้ได้แม่นยำ<br><span class="en">Identifier associated with the dataset</span></td><td>required</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>type</code></td><td>ชนิดข้อมูล เช่น raw data, time-series<br><span class="en">If appropriate, type according to: DataCite and/or COAR dictionary. Otherwise use the common name for the type, e.g. raw data,…</span></td><td>optional</td><td>0..1</td><td>image</td><td>What type of dataset is this?</td></tr>
+<tr><td><code>personal_data</code></td><td>มีข้อมูลส่วนบุคคลไหม บังคับตอบ ใช่/ไม่/ไม่รู้ — ด่านแรกของการคุ้มครองความเป็นส่วนตัว<br><em>เลือกได้เฉพาะ: yes, no, unknown</em><br><span class="en">To indicate whether a dataset contains personal data. Personal data refers to any data that can identify an individual (e.g.…</span></td><td>required</td><td>1</td><td>yes</td><td>Do these data include personal information?</td></tr>
+<tr><td><code>sensitive_data</code></td><td>มีข้อมูลอ่อนไหวไหม บังคับตอบ ใช่/ไม่/ไม่รู้ — ใช้ตัดสินว่าเก็บ/แจกยังไง<br><em>เลือกได้เฉพาะ: yes, no, unknown</em><br><span class="en">Sensitive data are data for which injury that could reasonably be expected as a result of a loss of confidentiality (resulting…</span></td><td>required</td><td>1</td><td>yes</td><td>Does the dataset contain sensitive data?</td></tr>
+<tr><td><code>language</code></td><td>ภาษาของข้อมูล<br><em>เลือกได้เฉพาะ: Use ISO 639-3 language code</em><br><span class="en">Language of the dataset expressed using ISO 639-3</span></td><td>optional</td><td>0..1</td><td>mul</td><td>What language is used in this dataset?</td></tr>
+<tr><td><code>keyword</code></td><td>คำสำคัญสำหรับค้นหา<br><span class="en">Keyword</span></td><td>optional</td><td>0..n</td><td>keyword 1, keyword 2</td><td>Provide some keywords related to this dataset.</td></tr>
+<tr><td><code>subject</code></td><td>หัวข้อตามระบบหมวดหมู่มาตรฐาน (เช่น ANZSRC) ให้เครื่องจัดหมวดตรงกันข้ามหน่วยงาน<br><span class="en">Topic to which a dataset pertains.</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>creator</code></td><td>ใครสร้างข้อมูลชุดนี้ พร้อม ID และสังกัด<br><span class="en">To specify the creators of the dataset</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>collection</code></td><td>ข้อมูลเก็บมาตั้งแต่เมื่อไรถึงเมื่อไร ใหญ่แค่ไหน โตปีละเท่าไร — ใช้วางแผนพื้นที่และงบ<br><span class="en">Information on how the data is collected.</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+<tr><td><code>metadata</code></td><td>ชี้ว่าใช้มาตรฐาน metadata อะไร (เช่น ISO 19115) — ไม่ได้เก็บ metadata จริง แค่บอกว่าไปอ่านที่ไหน<br><span class="en">To describe metadata standards used.</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>security_and_privacy</code></td><td>มาตรการรักษาความปลอดภัยเฉพาะของชุดนี้ เช่น ข้อมูลไม่ anonymize, ผลการประเมิน PIA<br><span class="en">To list all security and privacy measures applied to a dataset to protect sensitive information, for example encryption,…</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>technical_resource</code></td><td>เครื่องมือ/ซอฟต์แวร์/ฮาร์ดแวร์ที่ต้องใช้กับชุดนี้<br><span class="en">List all technical resources (e.g. tools or software) and computing environments required for any stage of a dataset lifecycle…</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> เป็นด่านตรวจแรก: ข้อมูลเราคืออะไร มีของละเอียดอ่อนไหม</p>
+<p><strong>ได้อะไรจากมัน:</strong> สองช่องบังคับ "มีข้อมูลส่วนตัวไหม / มีของอ่อนไหวไหม" ตอบตั้งแต่วันแรก ใช้ตัดสินได้เลยว่าจะเก็บยังไง แชร์ได้แค่ไหน</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> หัวใจของเรื่อง ต้องมี — ถ้าเพื่อนจะเลือกทำได้แค่ 3 ตาราง ตารางนี้ต้องอยู่ใน 3 อันนั้นเสมอ</p>
+</div>
+<h3><code>distribution</code> — ไฟล์ที่แจกจ่ายจริง</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ชื่อไฟล์/รูปแบบที่แจก เช่น &quot;ข้อมูลเวอร์ชัน CSV&quot;<br><span class="en">Title is a property in both Dataset and Distribution, in compliance with W3C DCAT. In some cases these might be identical, but in…</span></td><td>required WHEN</td><td>1</td><td>Full resolution images</td><td>What is the title of the distribution of the dataset?</td></tr>
+<tr><td><code>description</code></td><td>รายละเอียดของไฟล์นี้ ต่างจากเวอร์ชันอื่นยังไง<br><span class="en">Description is a property in both Dataset and Distribution, in compliance with W3C DCAT. In some cases these might be identical,…</span></td><td>optional</td><td>0..1</td><td>This dataset contains measurements from a single research…</td><td>Describe the distribution of the dataset.</td></tr>
+<tr><td><code>distribution_id</code></td><td>ตัวตนของไฟล์นี้ (ถ้ามี)<br><span class="en">ID for the distribution</span></td><td>required WHEN</td><td>1</td><td></td><td></td></tr>
+<tr><td><code>format</code></td><td>รูปแบบไฟล์ เช่น text/csv, application/json — เครื่องใช้เลือกวิธีอ่าน<br><span class="en">Format according to: https://www.iana.org/assignments/media-types/media-types.xhtml if appropriate, otherwise use the common name…</span></td><td>optional</td><td>0..n</td><td>csv</td><td>What is this distribution’s file format?</td></tr>
+<tr><td><code>byte_size</code></td><td>ขนาดเป็นไบต์ ตัวเลขล้วน ห้ามพิมพ์หน่วยปน — เพื่อให้เครื่องคำนวณพื้นที่ได้จริง<br><span class="en">Size of the distribution in bytes</span></td><td>optional</td><td>0..1</td><td>5,000,000,000,000</td><td>What is the size of the distribution bytes?</td></tr>
+<tr><td><code>data_access</code></td><td>การเข้าถึงไฟล์นี้: open / shared / closed<br><em>เลือกได้เฉพาะ: open, shared, closed</em><br><span class="en">OPEN ACCESS: available to anyone based on an open license (e.g., CC0, CC-BY, Open Government License). SHARED ACCESS: Public…</span></td><td>required WHEN</td><td>1</td><td>open</td><td>Is access to the data open, shared, or closed?</td></tr>
+<tr><td><code>access_url</code></td><td>ลิงก์เข้าถึง (อาจต้องล็อกอิน)<br><span class="en">A URL that gives access to the distribution. e.g., landing page, feed, SPARQL endpoint. The access URL should be used for the URL…</span></td><td>optional</td><td>0..1</td><td>some.data.catalogue/.../project_uuid</td><td>What is the access URL to the dataset?</td></tr>
+<tr><td><code>download_url</code></td><td>ลิงก์ดาวน์โหลดตรง ๆ<br><span class="en">The URL of the downloadable file in a given format. E.g. CSV file or RDF file.</span></td><td>optional</td><td>0..1</td><td>http://some.repo.../download/...</td><td>What is the download URL of the dataset.</td></tr>
+<tr><td><code>created</code></td><td>วันที่ไฟล์นี้ถูกสร้าง<br><span class="en">Date of creation of the distribution. Encoded using the relevant ISO 8601 Date compliant string</span></td><td>optional</td><td>0..1</td><td>2009-11-02</td><td>When was the distribution created?</td></tr>
+<tr><td><code>available_until</code></td><td>จะแจกไฟล์นี้ถึงวันไหน — หลังจากนั้นอาจถอนออก<br><span class="en">Indicates how long this distribution will be/should be available. Encoded using the relevant ISO 8601 Date compliant string</span></td><td>optional</td><td>0..1</td><td>2023-07-20</td><td>When is the dataset available until?</td></tr>
+<tr><td><code>status</code></td><td>สถานะไฟล์ เช่น draft / final / superseded<br><em>เลือกได้เฉพาะ: finished, minor Issues, major risk encountered, on track, not started</em><br><span class="en">Completion status of the distribution</span></td><td>optional</td><td>0..1</td><td>finished</td><td>What is the status of the data?</td></tr>
+<tr><td><code>protection_level</code></td><td>ระดับการป้องกันของไฟล์นี้ (อาจต่างจากชุดข้อมูล เช่น เวอร์ชัน anonymize ป้องกันน้อยกว่า)<br><em>เลือกได้เฉพาะ: unknown, not protected, protected A, protected B, protected C, other</em><br><span class="en">Protected information is not classified. Information is &quot;protected&quot; when unauthorized disclosure could reasonably be expected to…</span></td><td>optional</td><td>0..1</td><td>protected A</td><td>What is the protection level for these data?</td></tr>
+<tr><td><code>security_classification_level</code></td><td>ระดับความลับของไฟล์นี้<br><em>เลือกได้เฉพาะ: unclassified, restricted, confidential, secret, top secret, other, unkown</em><br><span class="en">Security classification that designates the level of protection against access the data or information requires when unauthorized…</span></td><td>optional</td><td>0..1</td><td>unclassified</td><td>What is the security classification of this distribution?</td></tr>
+<tr><td><code>host</code></td><td>เก็บไฟล์นี้ไว้ที่ไหน — ชี้ไปรายละเอียดคลังข้อมูล<br><span class="en">The host is the system where the data are stored and processed. Be sure to also fill in a physical data asset section to indicate…</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+<tr><td><code>license</code></td><td>เปิดไฟล์นี้ด้วยสัญญาอะไร ใส่ได้หลายสัญญา (เช่น มี embargo ซ้อน)<br><span class="en">To list all licenses applied to a specific distribution of data.</span></td><td>required IF</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>version_history</code></td><td>ประวัติว่าไฟล์นี้ถูกแก้เมื่อไรเพราะอะไร<br><span class="en">Version history of the data distribution</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> แยก "ไฟล์ที่แจกจริง" ออกจาก "ชุดข้อมูลในความคิด"</p>
+<p><strong>ได้อะไรจากมัน:</strong> ข้อมูลชุดเดียวแจกได้หลายไฟล์หลาย format (CSV, JSON, เวอร์ชันตัดชื่อคนออก) และรู้ชัดว่าไฟล์ไหนใหญ่แค่ไหน อยู่ที่ไหน ใครเข้าถึงได้</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี — และห้ามยุบมันลงไปรวมกับ dataset เด็ดขาด พอข้อมูลมีสอง format จะเก็บไม่ไหวทันที</p>
+</div>
+<h3><code>license</code> — สัญญาอนุญาต</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>license_ref</code></td><td>ลิงก์สัญญาอ้างจากทะเบียน SPDX เช่น CC-BY-4.0 — อ้าง URI แทนพิมพ์ชื่อ กันสะกดไม่เหมือนกัน<br><span class="en">Link to license document. Examples: https://open.canada.ca/en/open-government-license-canada ;…</span></td><td>required WHEN</td><td>1</td><td>https://open.canada.ca/en/open-government-license-canada</td><td>Provide a link to the license.</td></tr>
+<tr><td><code>start_date</code></td><td>สัญญาเริ่มวันไหน — ใช้ทำ embargo: ปิดไว้ก่อนแล้วเปิดอัตโนมัติภายหลัง<br><span class="en">If date is set in the future, it indicates an embargo period. Embargo for data sharing means that data will be made available…</span></td><td>required WHEN</td><td>1</td><td>2023-07-20</td><td>What is the start date of the license?</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> บอกว่าไฟล์นี้คนอื่นเอาไปใช้ต่อได้เงื่อนไขอะไร</p>
+<p><strong>ได้อะไรจากมัน:</strong> ระบบตั้งค่าการเข้าถึงอัตโนมัติได้ รวมถึงเคส "ปิดไว้ก่อน สามปีค่อยเปิด" (embargo) โดยไม่ต้องมีคนมานั่งเปิดเอง</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> ควรมี — เงื่อนไขเดียว: อ้างสัญญาจากทะเบียนกลาง (URI) เท่านั้น อย่าให้พิมพ์ชื่อสัญญาเอง ไม่งั้นแต่ละแผนจะสะกดไม่เหมือนกัน</p>
+</div>
+<h3><code>host</code> — คลัง/เซิร์ฟเวอร์ที่เก็บไฟล์</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>title</code></td><td>ชื่อคลัง/ระบบที่เก็บ เช่น ชื่อ repository<br><span class="en">The name of the system hosting the dataset for external access</span></td><td>required WHEN</td><td>1</td><td>Super Repository</td><td>What is the title for the host of the distribution?</td></tr>
+<tr><td><code>description</code></td><td>อธิบายเกี่ยวกับระบบเก็บนี้<br><span class="en">To describe the host of the distribution</span></td><td>optional</td><td>0..1</td><td>Repository hosted by...</td><td>Describe the host.</td></tr>
+<tr><td><code>url</code></td><td>ที่อยู่ของระบบ<br><span class="en">The URL of the system hosting a distribution of a dataset</span></td><td>required WHEN</td><td>1</td><td>https://zenodo.org</td><td>What is the url to the host of the distribution?</td></tr>
+<tr><td><code>geo_location</code></td><td>เซิร์ฟเวอร์อยู่ที่ไหน (มีผลกับกฎหมายข้อมูลข้ามประเทศ)<br><em>เลือกได้เฉพาะ: Use ISO 3166 Alpha-2 country code</em><br><span class="en">Physical location of the data expressed using ISO 3166-1 country code.</span></td><td>optional</td><td>0..1</td><td>CA</td><td>Where is the location of the host server?</td></tr>
+<tr><td><code>backup_frequency</code></td><td>สำรองข้อมูลบ่อยแค่ไหน เช่น ทุกวัน<br><span class="en">Frequency of backups provided by a host</span></td><td>optional</td><td>0..1</td><td>weekly</td><td>How often is the distribution backed up to the host?</td></tr>
+<tr><td><code>backup_type</code></td><td>สำรองแบบไหน เช่น off-site<br><span class="en">Type of backup of the host (e.g., incremental, full, differential, synthetic full) and/or backup location.</span></td><td>optional</td><td>0..1</td><td></td><td>What type of backup system is used for the host?</td></tr>
+<tr><td><code>certified_with</code></td><td>ได้รับรองมาตรฐานคลังข้อมูลอะไร เช่น CoreTrustSeal<br><span class="en">To indicate host trustworthiness via a standard repository standard or certificate (e.g., ISO 27001, CoreTrustSeal, etc.)</span></td><td>optional</td><td>0..1</td><td>coretrustseal</td><td>What is the host server certified with?</td></tr>
+<tr><td><code>pid_system</code></td><td>ระบบตัวตนที่รองรับ เช่น DOI, Handle<br><em>เลือกได้เฉพาะ: ark, arxiv, bibcode, doi, ean13, eissn, handle, igsn, isbn, issn, istc, lissn, lsid, pmid, purl, upc, url,…</em><br><span class="en">Persistent identifier system used by the host</span></td><td>optional</td><td>0..n</td><td>ark</td><td>What pid system is used for the host server?</td></tr>
+<tr><td><code>storage_type</code></td><td>ชนิดพื้นที่จัดเก็บ<br><span class="en">The type of storage, including whether the host supports versioning of data distributions</span></td><td>optional</td><td>0..1</td><td>cloud</td><td>What storage type does the host server use?</td></tr>
+<tr><td><code>support_checksum</code></td><td>รองรับตรวจ checksum ไหม — ใช้พิสูจน์ว่าไฟล์ไม่เสียหาย<br><em>เลือกได้เฉพาะ: yes (with exportable checksum); yes (without confirmed ability to export); no; unknown</em><br><span class="en">To indicate if checksums can be performed to ensure integrity of the distribution</span></td><td>optional</td><td>0..1</td><td>yes</td><td>Does the host support checksum?</td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดว่าไฟล์เก็บอยู่ระบบไหน ระบบนั้นน่าเชื่อถือแค่ไหน</p>
+<p><strong>ได้อะไรจากมัน:</strong> พอระบบเก่าจะปิดตัว จะรู้ทันทีว่าของเราอยู่ตรงไหน ต้องย้ายยังไง ก่อนที่มันจะหายไปพร้อมระบบ</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> มีก็ดี — แต่ข้อมูลอย่าง "สำรองทุกวัน" เก่าเร็ว ให้ถือระบบจริงเป็นตัวตั้ง แล้วมองข้อมูลตรงนี้เป็นภาพ snapshot ณ ตอนเขียนแผน</p>
+</div>
+<h3><code>technical_resource</code> — เครื่องมือ/ซอฟต์แวร์ที่ใช้</h3>
+<div class="table-scroll"><table class="ref">
+<thead><tr><th>ฟิลด์</th><th>อธิบายง่าย ๆ</th><th>บังคับ</th><th>Card.</th><th>ตัวอย่าง</th><th>คำถามในฟอร์มจริง</th></tr></thead><tbody>
+<tr><td><code>name</code></td><td>ชื่อเครื่องมือ/ซอฟต์แวร์<br><span class="en">Name of the technical resource</span></td><td>required WHEN</td><td>1</td><td>123/45/43/AT</td><td>Name the required technical resource.</td></tr>
+<tr><td><code>description</code></td><td>อธิบายว่าใช้ทำอะไร ใช้ตอนไหนในวงจรข้อมูล<br><span class="en">List all technical resources (e.g. tools or software) and computing environments required for any stage of a dataset lifecycle…</span></td><td>optional</td><td>0..1</td><td></td><td>Describe the required technical resource.</td></tr>
+<tr><td><code>software</code></td><td>ซอฟต์แวร์/โค้ดที่ใช้ — ชื่อ, license, repo, ภาษาที่เขียน<br><span class="en">Repeat as many times as needed to describe all software and code used for data collection, data processing, data analysis, data…</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>hardware_requirements</code></td><td>สเปกเครื่องขั้นต่ำ เช่น RAM, CPU, พื้นที่<br><span class="en">Minimum requirements for processing data for a specific purpose</span></td><td>optional</td><td>0..n</td><td></td><td></td></tr>
+<tr><td><code>data_management_system</code></td><td>ระบบจัดการข้อมูลที่ใช้ เช่น LIMS, ฐานข้อมูล พร้อมสเปก security/backup<br><span class="en">To describe the database management system or other computerized data system used to store or manage active data. Every other…</span></td><td>optional</td><td>0..1</td><td></td><td></td></tr>
+</tbody></table></div>
+<div class="entity-summary">
+<p><strong>ทำไว้เพื่อ:</strong> จดว่าจะใช้โปรแกรมหรือเครื่องอะไร สเปกขั้นต่ำเท่าไหร่</p>
+<p><strong>ได้อะไรจากมัน:</strong> คนที่เอาข้อมูลไปใช้ต่อปีจะรู้ว่าต้องลงโปรแกรมอะไร เครื่องต้องแรงแค่ไหน ไม่ต้องลองผิดลองถูกเอง</p>
+<p><strong>ควรมีตารางนี้ไหม:</strong> เก็บแบบง่าย ๆ ก็พอ — อย่าลงลึกเกินไป เพราะยิ่งละเอียด ข้อมูลยิ่งเก่าเร็ว โปรแกรมเปลี่ยนทุกปี</p>
+</div>
+  </div>
+
+  <footer>สร้างจาก README.md — GCWG-RDA maDMP metadata specification v3.0 · cardinality ทุกตัวอ้างจากตาราง properties ในเอกสารจริง (ค่าที่ไม่ได้แสดงบนผัง เช่น indigenous_considerations, linked_dmp, safeguarding_science_measures เป็นกลุ่มย่อย optional เพิ่มเติม)</footer>
+</div>
+
+<script>
+const DETAIL = {
+  dmp: {
+    name: 'dmp — ปกแฟ้ม',
+    text: 'ทุกอย่างในแผนนี้อยู่ในกล่องเดียว เหมือนปกแฟ้มที่มีชื่อ วันที่สร้าง วันที่แก้ล่าสุด และหมายเลขประจำตัว — ทำให้ระบบหาเจอและรู้เสมอว่าเวอร์ชันไหนใหม่กว่า ไม่มีกล่องนี้ก็ไม่มีอะไรเหลือให้พูดถึง'
+  },
+  approval: {
+    name: 'approval — ใครอนุมัติ วันไหน',
+    text: 'จดว่าหัวหน้าอนุมัติแผนนี้หรือยัง ใครเป็นคนกดผ่าน ประโยชน์คือตอนมีข้อโต้แย้งจะมีหลักฐานยกมาได้ ข้อควรรู้: เก็บได้แค่ผลล่าสุด — เคยถูกส่งกลับมาแก้กี่รอบเพราะอะไร จะไม่มีที่ไหนบอก'
+  },
+  contact: {
+    name: 'contact — คนที่ถามได้',
+    text: 'ผู้ติดต่อ 1 คนต่อแผน (บังคับใส่อีเมล) ระบบจะใช้คนนี้ส่งข้อความอัตโนมัติได้เลย ข้อควรรู้: ถ้าคนคนเดียวกันเป็นผู้ติดต่อของหลายแผน ชื่อกับอีเมลจะถูกพิมพ์ซ้ำหลายที่ — พอเขาเปลี่ยนอีเมล ต้องไล่แก้ทุกแผน'
+  },
+  contributor: {
+    name: 'contributor — ทีมงาน',
+    text: 'ใครอยู่ในทีมบ้าง ใครเก็บข้อมูล ใครดูแล ใครวิเคราะห์ ใส่กี่คนก็ได้ จริง ๆ มันเป็นเรื่องเดียวกับ contact เพียงแต่คนละบทบาท — เหมือนพนักงานคนเดียวกันสวมหมวกต่างกันในแต่ละวัน'
+  },
+  cost: {
+    name: 'cost — ต้องใช้เงินเท่าไหร่',
+    text: 'จดค่าใช้จ่ายเรื่องข้อมูล เช่น ค่าเก็บรักษา ค่าระบบ จำนวนเงินกับสกุลเงินถูกแยกเก็บคนละช่อง ทำให้เครื่องรวมงบข้ามหลายแผนได้ถูกต้อง ไม่จำเป็นสำหรับทุกระบบ แต่ตอนของบปีหน้า มีตัวเลขยกมาโชว์ได้ทันที'
+  },
+  project: {
+    name: 'project — แผนนี้เป็นของโครงการไหน',
+    text: 'ผูกแผนข้อมูลเข้ากับโครงการวิจัยด้วยรหัสโครงการ ทำให้เปิดดูโครงการอะไรก็เจอแผนข้อมูลของมันตามไปด้วย — แผนไม่กลายเป็นเอกสารลอย ๆ ที่ไม่มีใครรู้ว่าเป็นของใคร'
+  },
+  funding: {
+    name: 'funding — ใครจ่ายเงิน',
+    text: 'จดว่าใครให้ทุน ทุนไหน เลขที่อะไร ประโยชน์ใหญ่สุด: ถูกถามว่า "ข้อมูลชุดนี้มาจากทุนไหน" ตอบได้ทันทีโดยไม่ต้องไล่ถามคน สเปกที่ไม่มีส่วนนี้จะทำรายงานให้ผู้ให้ทุนอัตโนมัติไม่ได้เลย'
+  },
+  partner_organization: {
+    name: 'partner_organization — คู่ร่วมงานกับสัญญา',
+    text: 'จดคู่ร่วมงาน สัญญาอะไร (MOU, MOA ฯลฯ) และไฟล์สัญญาอยู่ไหน ตอนจะแชร์ข้อมูลกับภายนอก เปิดดูได้ทันทีว่าเราเคยเซ็นอะไรไว้ ข้อควรรู้: สัญญา 1 ฉบับที่คลุมหลายหน่วยงาน ต้องอัปไฟล์ซ้ำหลายแถว'
+  },
+  dataset: {
+    name: 'dataset — ข้อมูลของเราคืออะไร',
+    text: 'หัวใจของทั้งสเปก ตอบคำถามแรกและสำคัญที่สุด: ข้อมูลคืออะไร มีข้อมูลส่วนตัวหรือของอ่อนไหวไหม — สองช่องนี้บังคับตอบตั้งแต่วันแรก ใช้ตัดสินเลยว่าจะเก็บและแชร์ยังไง ถ้ามีเวลาอ่านแค่กล่องเดียว อ่านกล่องนี้'
+  },
+  technical_resource: {
+    name: 'technical_resource — ต้องใช้อะไรถึงจะเปิดข้อมูลได้',
+    text: 'จดว่าใช้โปรแกรมหรือเครื่องอะไร เครื่องขั้นต่ำแรงแค่ไหน คนที่เอาข้อมูลไปใช้ต่อจะได้เตรียมตัวถูก มองเป็น "คู่มือเตรียมตัวก่อนเปิดข้อมูล" ก็ได้'
+  },
+  dataset_extras: {
+    name: 'ของชิ้นเล็กของ dataset',
+    text: 'กล่องรวมของเสริมที่ใส่หรือไม่ใส่ก็ได้ จุดที่แอบออกแบบเก่ง: ช่อง metadata ไม่ได้เก็บข้อมูลประกอบจริง ๆ แค่บอกว่าใช้มาตรฐานไหนแล้วให้ไปอ่านที่นั่น — ไม่พิมพ์ของซ้ำโดยไม่จำเป็น'
+  },
+  distribution: {
+    name: 'distribution — ไฟล์จริงที่แจก',
+    text: 'dataset เป็นแค่แนวคิด กล่องนี้คือไฟล์จริงที่แจก — ข้อมูลชุดเดียวแจกได้ทั้ง CSV และ JSON ไฟล์ละ 1 กล่อง รู้ชัดว่าไฟล์ไหนใหญ่แค่ไหน อยู่ที่ไหน ใครเข้าถึงได้ กล่องนี้ออกแบบดีที่สุดในเล่ม'
+  },
+  license: {
+    name: 'license — เอาไปใช้ได้แค่ไหน',
+    text: 'บอกว่าไฟล์นี้คนอื่นนำไปใช้ต่อได้เงื่อนไขอะไร อ้างสัญญาจากทะเบียนกลาง ไม่ให้พิมพ์ชื่อเอง กันคนนึงเขียน CC-BY อีกคนเขียน CC BY แล้วระบบจับคู่ไม่เจอ มีวันเริ่มสัญญาให้ทำ "ปิดไว้ก่อน เปิดปีหน้า" (embargo) ได้ด้วย'
+  },
+  host: {
+    name: 'host — ไฟล์เก็บอยู่ที่ไหน',
+    text: 'จดว่าไฟล์เก็บอยู่ระบบไหน ระบบนั้นสำรองข้อมูลกี่ครั้ง น่าเชื่อถือแค่ไหน พอระบบเก่าปิดตัว จะรู้ว่าของอยู่ที่ไหนต้องย้ายยังไง ข้อควรรู้: ตัวเลขพวก "สำรองทุกวัน" เปลี่ยนบ่อย อย่าเชื่อว่ายังตรงกับวันนี้ 100%'
+  },
+  distribution_extras: {
+    name: 'ของชิ้นเล็กของ distribution',
+    text: 'ประวัติการแก้ไฟล์, checksum (ลายนิ้วมือของไฟล์ ไว้เช็กว่าไฟล์ไม่เสียระหว่างส่ง), บริการออนไลน์ที่เกี่ยวข้อง ข้อจำกัดจริง: ประวัติการแก้เก็บได้แค่ชุดเดียว — ไฟล์ที่ถูกแก้หลายรอบจะจดไม่หมด'
+  }
+};
+
+const card = document.getElementById('detail-card');
+const DEFAULT = card.innerHTML;
+document.querySelectorAll('g.ent').forEach(g => {
+  const info = DETAIL[g.dataset.key];
+  if (!info) return;
+  g.addEventListener('mouseenter', () => {
+    card.innerHTML = '<h4><code>' + info.name + '</code></h4><p>' + info.text + '</p>';
+  });
+  g.addEventListener('mouseleave', () => { card.innerHTML = DEFAULT; });
+  g.addEventListener('click', () => {
+    card.innerHTML = '<h4><code>' + info.name + '</code></h4><p>' + info.text + '</p>';
+  });
+});
+</script>
