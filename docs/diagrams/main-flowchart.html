@@ -1,31 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Main Flowchart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { font-family: system-ui, sans-serif; margin: 2rem; }
-    .mermaid { background: #fff; padding: 1rem; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;   /* white-smoke */
+      --color-ink:     #2d3142;   /* jet-black */
+      --color-muted:   #4f5d75;   /* blue-slate */
+      --color-soft:    #7a8399;
+      --color-accent:  #eb6c36;   /* atomic-tangerine */
+      --font-sans:     'Geist', 'Noto Sans Thai', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif Thai', 'Noto Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1100px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      color: var(--color-ink); margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
   </style>
 </head>
 <body>
-  <h1>ผังการทำงานหลัก (Main Flowchart)</h1>
-  <div class="mermaid">
-flowchart TD
-    R([Researcher]) --> U["upload proposal (.docx)"] --> MP{make plan by AI}
-    MP -->|yes| AI[ai gen DMP] --> D[DMP]
-    MP -->|no| M[create DMP by yourself] --> D
-    D --> E{edit plan}
-    E -->|yes| UP[update plan] --> E
-    E -->|no| S[submit plan] --> A{approve ครบทุกคน?}
-    A -->|yes| N1[notify approved] --> P[progress bar]
-    A -->|no| N2[notify to fix] --> E
-    C([Committee — ทุกคนต้องกด]) --> CD[check DMP] --> A
+  <div class="frame">
+    <p class="eyebrow">Flowchart · Diagram Design</p>
+    <h1>ผังการทำงานหลัก — Main Flowchart</h1>
+
+    <svg viewBox="0 0 1000 1160" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="main-flow-title main-flow-desc">
+      <title id="main-flow-title">ผังการทำงานหลักของระบบติดตามงานวิจัย</title>
+      <desc id="main-flow-desc">Flowchart ของกระบวนการ: นักวิจัยอัปโหลด proposal สร้างแผน DMP ด้วย AI หรือเขียนเอง แก้ไขจนพอใจ ส่ง Commit ให้กรรมการตรวจ หากอนุมัติครบทุกคนจึงเข้าสู่ Progress bar หากไม่ครบจะแจ้งให้กลับไปแก้ไข</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===== arrows first ===== -->
+      <g fill="none" stroke="#4f5d75" stroke-width="1">
+        <path d="M500,80 V124" marker-end="url(#arrow)"/>
+        <path d="M500,176 V224" marker-end="url(#arrow)"/>
+        <path d="M604,276 H668" marker-end="url(#arrow)"/>
+        <path d="M396,276 H332" marker-end="url(#arrow)"/>
+        <path d="M756,300 V412 Q756,420 748,420 H588" marker-end="url(#arrow)"/>
+        <path d="M244,300 V412 Q244,420 252,420 H412" marker-end="url(#arrow)"/>
+        <path d="M500,448 V496" marker-end="url(#arrow)"/>
+        <path d="M596,548 H668" marker-end="url(#arrow)"/>
+        <path d="M840,548 H900 Q908,548 908,540 V448 Q908,440 900,440 H588" marker-end="url(#arrow)"/>
+        <path d="M500,596 V652" marker-end="url(#arrow)"/>
+        <path d="M500,704 V748" marker-end="url(#arrow)"/>
+        <path d="M744,808 H632" marker-end="url(#arrow)"/>
+        <path d="M372,808 H316" marker-end="url(#arrow)"/>
+        <path d="M232,832 V876 Q232,884 240,884 H348 Q356,884 356,876 V556 Q356,548 364,548 H400" marker-end="url(#arrow)"/>
+        <path d="M500,976 V1012" marker-end="url(#arrow)"/>
+      </g>
+      <!-- happy path: approve -->
+      <path d="M500,864 V924" fill="none" stroke="#eb6c36" stroke-width="1.2" marker-end="url(#arrow-accent)"/>
+
+      <!-- ===== arrow labels (mask + 6-10px gap) ===== -->
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="500" fill="#7a8399" text-anchor="middle">
+        <rect x="616" y="252" width="40" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="636" y="265">ใช่</text>
+        <rect x="340" y="252" width="44" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="362" y="265">ไม่</text>
+        <rect x="608" y="524" width="44" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="630" y="537">ใช่</text>
+        <rect x="512" y="612" width="44" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="534" y="625">ไม่</text>
+        <rect x="512" y="880" width="104" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="564" y="893">ครบทุกคน</text>
+        <rect x="304" y="784" width="64" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="336" y="797">ไม่ครบ</text>
+      </g>
+
+      <!-- ===== nodes ===== -->
+      <!-- start: researcher -->
+      <rect x="420" y="32" width="160" height="48" rx="20" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <text x="500" y="62" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">นักวิจัย</text>
+
+      <!-- upload proposal -->
+      <rect x="380" y="128" width="240" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="500" y="152" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">อัปโหลด Proposal</text>
+      <text x="500" y="168" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace" text-anchor="middle">file: .docx</text>
+
+      <!-- decision: AI plan -->
+      <polygon points="500,228 604,276 500,324 396,276" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="500" y="272" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">ให้ AI สร้างแผน?</text>
+      <text x="500" y="288" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace" text-anchor="middle">make plan by AI</text>
+
+      <!-- AI gen -->
+      <rect x="672" y="252" width="168" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="756" y="276" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">AI สร้าง DMP</text>
+      <text x="756" y="292" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace" text-anchor="middle">ai gen DMP</text>
+
+      <!-- manual plan -->
+      <rect x="160" y="252" width="168" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="244" y="282" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">เขียน DMP เอง</text>
+
+      <!-- DMP draft -->
+      <rect x="416" y="400" width="168" height="48" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="500" y="430" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">DMP ฉบับร่าง</text>
+
+      <!-- decision: edit -->
+      <polygon points="500,500 596,548 500,596 404,548" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="500" y="554" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">แก้ไขแผน?</text>
+
+      <!-- update plan -->
+      <rect x="672" y="524" width="168" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="756" y="554" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">อัปเดตแผน</text>
+
+      <!-- submit -->
+      <rect x="416" y="656" width="168" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="500" y="686" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">ส่งแผน (Commit)</text>
+
+      <!-- decision: approve (focal) -->
+      <polygon points="500,752 628,808 500,864 372,808" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <text x="500" y="804" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">กรรมการอนุมัติ</text>
+      <text x="500" y="820" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">ครบทุกคน?</text>
+
+      <!-- committee input -->
+      <rect x="744" y="784" width="216" height="48" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <text x="852" y="808" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">กรรมการตรวจ DMP</text>
+      <text x="852" y="824" fill="#4f5d75" font-size="9" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">ทุกคนต้องกด approve</text>
+
+      <!-- notify fix -->
+      <rect x="152" y="784" width="160" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="232" y="814" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">แจ้งให้แก้ไข</text>
+
+      <!-- notify approved -->
+      <rect x="416" y="928" width="168" height="48" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <text x="500" y="958" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">แจ้งอนุมัติทุกคน</text>
+
+      <!-- end: progress bar -->
+      <rect x="420" y="1016" width="160" height="48" rx="20" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="500" y="1046" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Progress bar</text>
+
+      <!-- ===== legend ===== -->
+      <line x1="30" y1="1092" x2="970" y2="1092" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="30" y="1112" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace" letter-spacing="0.14em">LEGEND</text>
+      <rect x="100" y="1104" width="28" height="16" rx="8" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="0.8"/>
+      <text x="136" y="1116" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">เริ่ม/จบ</text>
+      <rect x="220" y="1104" width="28" height="16" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="0.8"/>
+      <text x="256" y="1116" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">ขั้นตอน</text>
+      <polygon points="300,1104 320,1112 300,1120 280,1112" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="0.8"/>
+      <text x="330" y="1116" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">จุดตัดสินใจ</text>
+      <rect x="432" y="1104" width="28" height="16" rx="4" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="0.8"/>
+      <text x="468" y="1116" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">ผู้เกี่ยวข้อง</text>
+    </svg>
   </div>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
-  </script>
 </body>
 </html>

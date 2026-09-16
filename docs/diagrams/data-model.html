@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ER Diagram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;   /* white-smoke */
+      --color-ink:     #2d3142;   /* jet-black */
+      --color-muted:   #4f5d75;   /* blue-slate */
+      --color-soft:    #7a8399;
+      --color-accent:  #eb6c36;   /* atomic-tangerine */
+      --font-sans:     'Geist', 'Noto Sans Thai', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif Thai', 'Noto Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      color: var(--color-ink); margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 960px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">ER / Data Model · Diagram Design</p>
+    <h1>โครงสร้างข้อมูล — Project → Proposal → Plan → Task</h1>
+
+    <svg viewBox="0 0 1120 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="er-diag-title er-diag-desc">
+      <title id="er-diag-title">ER Diagram ของระบบติดตามงานวิจัย</title>
+      <desc id="er-diag-desc">แผนภาพเอนทิตี 6 ตัว: USER เป็นนักวิจัยหรือกรรมการของ PROJECT และได้รับ NOTIFICATION, PROJECT มี PROPOSAL และ PLAN หนึ่งชุด, PLAN ประกอบด้วย TASK หลายรายการ</desc>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===== relationship lines first ===== -->
+      <g fill="none" stroke="#4f5d75" stroke-width="1">
+        <!-- USER - PROJECT (researcher/committee) -->
+        <path d="M134,172 V232 Q134,240 142,240 H492 Q500,240 500,232 V216"/>
+        <!-- USER - NOTIFICATION -->
+        <path d="M204,172 V296"/>
+        <!-- PROJECT - PROPOSAL -->
+        <path d="M760,140 H844"/>
+        <!-- PROJECT - PLAN -->
+        <path d="M620,212 V296"/>
+        <!-- PLAN - TASK -->
+        <path d="M580,376 V520"/>
+      </g>
+
+      <!-- relationship labels (Thai → 12px sans) -->
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="500" fill="#7a8399" text-anchor="middle">
+        <rect x="252" y="214" width="156" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="330" y="227">เป็นนักวิจัย / กรรมการของ</text>
+        <rect x="216" y="226" width="52" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="242" y="239">ได้รับ</text>
+        <rect x="786" y="114" width="36" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="804" y="127">มี</text>
+        <rect x="632" y="240" width="36" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="650" y="253">มี</text>
+        <rect x="592" y="436" width="92" height="16" rx="2" fill="#f5f5f5"/>
+        <text x="638" y="449">ประกอบด้วย</text>
+      </g>
+
+      <!-- cardinality (mono, off-stroke) -->
+      <g font-family="'Geist Mono',monospace" font-size="8" fill="#4f5d75">
+        <text x="142" y="196">1</text>
+        <text x="510" y="236">N</text>
+        <text x="212" y="196">1</text>
+        <text x="212" y="290">N</text>
+        <text x="770" y="130">1</text>
+        <text x="842" y="130" text-anchor="end">0..1</text>
+        <text x="630" y="232">1</text>
+        <text x="630" y="290">0..1</text>
+        <text x="590" y="396">1</text>
+        <text x="590" y="514">N</text>
+      </g>
+
+      <!-- ===== entities ===== -->
+      <!-- USER -->
+      <rect x="64" y="96" width="280" height="76" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="72" y="102" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="92" y="111" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="122" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">USER</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="76" y="136"># user_id</text>
+        <text x="76" y="152">role: researcher|committee|chief|admin</text>
+      </g>
+
+      <!-- PROJECT (aggregate root — focal) -->
+      <rect x="480" y="96" width="280" height="116" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1.2"/>
+      <rect x="488" y="102" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="508" y="111" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="538" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">PROJECT</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="492" y="136"># project_id</text>
+        <text x="492" y="152">project_name</text>
+        <text x="492" y="168">→ researcher_id (USER)</text>
+        <text x="492" y="184">→ committee_id (USER)</text>
+        <text x="492" y="200">status</text>
+      </g>
+
+      <!-- PROPOSAL -->
+      <rect x="848" y="96" width="216" height="68" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="856" y="102" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="876" y="111" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="906" y="112" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">PROPOSAL</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="860" y="136"># proposal_file_id</text>
+        <text x="860" y="152">file: .docx</text>
+      </g>
+
+      <!-- PLAN -->
+      <rect x="480" y="300" width="280" height="76" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="488" y="306" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="508" y="315" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="538" y="316" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">PLAN</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="492" y="340"># plan_id</text>
+        <text x="492" y="356">title</text>
+      </g>
+
+      <!-- NOTIFICATION -->
+      <rect x="64" y="300" width="280" height="100" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="72" y="306" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="92" y="315" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="122" y="316" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">NOTIFICATION</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="76" y="340"># notification_id</text>
+        <text x="76" y="356">→ user_id (USER)</text>
+        <text x="76" y="372">message</text>
+        <text x="76" y="388">is_read: bool</text>
+      </g>
+
+      <!-- TASK -->
+      <rect x="440" y="524" width="280" height="180" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="448" y="530" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="468" y="539" fill="rgba(45,49,66,0.80)" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">ENTITY</text>
+      <text x="498" y="540" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist',sans-serif">TASK</text>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="452" y="564"># task_id</text>
+        <text x="452" y="580">→ plan_id (PLAN)</text>
+        <text x="452" y="596">→ project_id (PROJECT)</text>
+        <text x="452" y="612">details</text>
+        <text x="452" y="628">deadline_start: date</text>
+        <text x="452" y="644">deadline_end: date</text>
+        <text x="452" y="660">progress_percent: int</text>
+        <text x="452" y="676">→ proposal_file_id (.docx)</text>
+        <text x="452" y="692">status</text>
+      </g>
+
+      <!-- ===== legend ===== -->
+      <line x1="30" y1="736" x2="1090" y2="736" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="30" y="756" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace" letter-spacing="0.14em">LEGEND</text>
+      <text x="100" y="760" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace"># = primary key</text>
+      <text x="260" y="760" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace">→ = foreign key</text>
+      <text x="420" y="760" fill="#4f5d75" font-size="9" font-family="'Geist Mono',monospace">1 / N / 0..1 = cardinality</text>
+      <rect x="620" y="748" width="14" height="14" rx="3" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="0.8"/>
+      <text x="644" y="760" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">aggregate root</text>
+    </svg>
+  </div>
+</body>
+</html>

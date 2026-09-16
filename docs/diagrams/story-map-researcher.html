@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story Map — ระบบติดตามงานวิจัย</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+Thai:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;   /* white-smoke */
+      --color-ink:     #2d3142;   /* jet-black */
+      --color-muted:   #4f5d75;   /* blue-slate */
+      --color-soft:    #7a8399;
+      --color-accent:  #eb6c36;   /* atomic-tangerine */
+      --font-sans:     'Geist', 'Noto Sans Thai', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif Thai', 'Noto Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1240px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      color: var(--color-ink); margin-bottom: 0.5rem;
+    }
+    .sub {
+      font-size: 0.875rem; color: var(--color-muted); margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1000px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Story Map · Diagram Design</p>
+    <h1>User Story Map — ระบบติดตามงานวิจัย</h1>
+    <p class="sub">มุมมองของนักวิจัย (Researcher): เส้นเรื่องเรียงจากซ้ายไปขวา แถวล่างแบ่งเป็น MVP / Release 2 / Later — เส้นสีส้มคือ release cut ของ MVP</p>
+
+    <svg viewBox="0 0 1160 552" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="storymap-title storymap-desc">
+      <title id="storymap-title">User story map ของระบบติดตามงานวิจัย</title>
+      <desc id="storymap-desc">Story map ฝั่งนักวิจัย 5 กิจกรรม (เข้าใช้ระบบ, เริ่มโปรเจกต์, สร้างแผน DMP, ส่งขออนุมัติ, ติดตามผล) แบ่ง story เป็นสามรอบ MVP, Release 2 และ Later โดย MVP ตัดจบที่การสร้างแผนด้วย AI และส่งขออนุมัติ</desc>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- ===== slice bands (painted first) ===== -->
+      <rect x="96" y="256" width="976" height="64" fill="rgba(45,49,66,0.02)"/>
+      <rect x="96" y="384" width="976" height="64" fill="rgba(45,49,66,0.02)"/>
+
+      <!-- ===== column separators (dashed — map has gaps) ===== -->
+      <g stroke="rgba(45,49,66,0.10)" stroke-width="0.8" stroke-dasharray="4,4">
+        <line x1="284" y1="144" x2="284" y2="448"/>
+        <line x1="484" y1="144" x2="484" y2="448"/>
+        <line x1="684" y1="144" x2="684" y2="448"/>
+        <line x1="884" y1="144" x2="884" y2="448"/>
+      </g>
+
+      <!-- ===== slice labels (left margin) ===== -->
+      <g font-family="'Geist Mono',monospace" font-size="8" font-weight="500" letter-spacing="0.14em" fill="#4f5d75">
+        <text x="16" y="292">MVP</text>
+        <text x="16" y="356">RELEASE 2</text>
+        <text x="16" y="420">LATER</text>
+      </g>
+
+      <!-- ===== backbone ===== -->
+      <g>
+        <rect x="96" y="72" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="296" y="72" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="496" y="72" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="696" y="72" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+        <rect x="896" y="72" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      </g>
+      <g font-family="'Geist Mono',monospace" font-size="8" font-weight="500" letter-spacing="0.14em" fill="#7a8399">
+        <text x="108" y="94">ACTIVITY 1</text>
+        <text x="308" y="94">ACTIVITY 2</text>
+        <text x="508" y="94">ACTIVITY 3</text>
+        <text x="708" y="94">ACTIVITY 4</text>
+        <text x="908" y="94">ACTIVITY 5</text>
+      </g>
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="600" fill="#2d3142">
+        <text x="108" y="118">เข้าใช้ระบบ</text>
+        <text x="308" y="118">เริ่มโปรเจกต์</text>
+        <text x="508" y="118">สร้างแผน DMP</text>
+        <text x="708" y="118">ส่งขออนุมัติ</text>
+        <text x="908" y="118">ติดตามผล</text>
+      </g>
+
+      <!-- ===== walking skeleton row ===== -->
+      <g>
+        <rect x="96"  y="152" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="96"  y="192" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="296" y="152" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="496" y="152" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="496" y="192" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="696" y="152" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="696" y="192" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="896" y="152" width="176" height="32" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      </g>
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" fill="#2d3142">
+        <text x="106" y="172">เข้าสู่ระบบ</text>
+        <text x="106" y="212">ออกจากระบบ</text>
+        <text x="306" y="172">อัปโหลด Proposal</text>
+        <text x="506" y="172">สร้างแผน</text>
+        <text x="506" y="212">แก้ไขแผน</text>
+        <text x="706" y="172">ส่ง Commit</text>
+        <text x="706" y="212">ตรวจและอนุมัติ</text>
+        <text x="906" y="172">ดูความคืบหน้า</text>
+      </g>
+
+      <!-- ===== MVP stories ===== -->
+      <g>
+        <rect x="96"  y="264" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="296" y="264" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <!-- focal risk card -->
+        <rect x="496" y="264" width="176" height="48" rx="4" fill="rgba(235,108,54,0.05)" stroke="#eb6c36" stroke-width="1" stroke-dasharray="4,4"/>
+        <rect x="696" y="264" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      </g>
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="600" fill="#2d3142">
+        <text x="104" y="284">เข้าสู่ระบบ / ออก</text>
+        <text x="304" y="284">อัปโหลด Proposal</text>
+        <text x="504" y="284">สร้างแผนด้วย AI</text>
+        <text x="704" y="284">Commit ขออนุมัติ</text>
+      </g>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="104" y="302">RPT-101 · 2pt</text>
+        <text x="304" y="302">RPT-102 · 3pt</text>
+        <text x="504" y="302">RPT-103 · 5pt</text>
+        <text x="704" y="302">RPT-104 · 3pt</text>
+      </g>
+      <rect x="628" y="268" width="36" height="12" rx="2" fill="transparent" stroke="#eb6c36" stroke-width="0.8"/>
+      <text x="646" y="277" fill="#eb6c36" font-size="7" font-family="'Geist Mono',monospace" text-anchor="middle" letter-spacing="0.08em">RISK</text>
+
+      <!-- ===== release cut (accent #1) ===== -->
+      <line x1="96" y1="320" x2="1072" y2="320" stroke="#eb6c36" stroke-width="1.5"/>
+      <rect x="964" y="300" width="104" height="14" rx="2" fill="#f5f5f5"/>
+      <text x="1070" y="311" fill="#eb6c36" font-size="8" font-family="'Geist Mono',monospace" letter-spacing="0.14em" text-anchor="end">RELEASE CUT</text>
+
+      <!-- ===== release 2 stories ===== -->
+      <g>
+        <rect x="96"  y="328" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="496" y="328" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="696" y="328" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="896" y="328" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      </g>
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="600" fill="#2d3142">
+        <text x="104" y="348">รับการแจ้งเตือน</text>
+        <text x="504" y="348">เขียนแผนเอง</text>
+        <text x="704" y="348">แก้ไขแล้ว Commit ใหม่</text>
+        <text x="904" y="348">Progress bar</text>
+      </g>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="104" y="366">RPT-201 · 2pt</text>
+        <text x="504" y="366">RPT-202 · 3pt</text>
+        <text x="704" y="366">RPT-203 · 2pt</text>
+        <text x="904" y="366">RPT-204 · 3pt</text>
+      </g>
+
+      <!-- ===== later stories ===== -->
+      <g>
+        <rect x="696" y="392" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="896" y="392" width="176" height="48" rx="4" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      </g>
+      <g font-family="'Geist','Noto Sans Thai',sans-serif" font-size="12" font-weight="600" fill="#2d3142">
+        <text x="704" y="412">ลบแผน (Delete)</text>
+        <text x="904" y="412">แจ้งเตือนก่อน deadline</text>
+      </g>
+      <g font-family="'Geist Mono',monospace" font-size="9" fill="#4f5d75">
+        <text x="704" y="430">RPT-301 · 1pt</text>
+        <text x="904" y="430">RPT-302 · 2pt</text>
+      </g>
+
+      <!-- ===== legend ===== -->
+      <line x1="96" y1="488" x2="1072" y2="488" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="96" y="508" fill="#4f5d75" font-size="8" font-family="'Geist Mono',monospace" letter-spacing="0.14em">LEGEND</text>
+      <rect x="168" y="496" width="20" height="14" rx="3" fill="#ffffff" stroke="#2d3142" stroke-width="0.8"/>
+      <text x="196" y="508" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">Story</text>
+      <rect x="272" y="496" width="20" height="14" rx="3" fill="rgba(235,108,54,0.05)" stroke="#eb6c36" stroke-width="0.8" stroke-dasharray="4,4"/>
+      <text x="300" y="508" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">ความเสี่ยงสูง</text>
+      <line x1="424" y1="503" x2="448" y2="503" stroke="#eb6c36" stroke-width="1.5"/>
+      <text x="456" y="508" fill="#4f5d75" font-size="12" font-family="'Geist','Noto Sans Thai',sans-serif">Release cut (ขอบเขต MVP)</text>
+    </svg>
+  </div>
+</body>
+</html>
