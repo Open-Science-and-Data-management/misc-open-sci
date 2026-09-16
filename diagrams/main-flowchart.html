@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Main Flowchart</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    .mermaid { background: #fff; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>ผังการทำงานหลัก (Main Flowchart)</h1>
+  <div class="mermaid">
+flowchart TD
+    R([Researcher]) --> U[upload doc] --> MP{make plan by AI}
+    MP -->|yes| AI[ai gen DMP] --> D[DMP]
+    MP -->|no| M[create DMP by yourself] --> D
+    D --> E{edit plan}
+    E -->|yes| UP[update plan] --> E
+    E -->|no| S[submit plan] --> A{approve ครบทุกคน?}
+    A -->|yes| N1[notify approved] --> P[progress bar]
+    A -->|no| N2[notify to fix] --> E
+    C([Committee — ทุกคนต้องกด]) --> CD[check DMP] --> A
+  </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+</body>
+</html>

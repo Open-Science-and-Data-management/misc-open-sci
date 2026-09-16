@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ER Diagram</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    .mermaid { background: #fff; padding: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>โครงสร้างข้อมูลเบื้องต้น (ER Diagram — draft)</h1>
+  <p>ลำดับชั้น: <strong>Project → Proposal (ไฟล์ .docx) → Plan (แผนรายสัปดาห์) → Task</strong></p>
+  <div class="mermaid">
+erDiagram
+    USER ||--o{ PROJECT : "เป็นนักวิจัยของ"
+    USER ||--o{ PROJECT : "เป็นกรรมการของ"
+    USER ||--o{ NOTIFICATION : "ได้รับ"
+    PROJECT ||--o| PROPOSAL : "มี"
+    PROJECT ||--o| PLAN : "มี"
+    PLAN ||--o{ TASK : "ประกอบด้วย"
+
+    USER {
+        int user_id PK
+        string role "researcher | committee | chief | admin"
+    }
+    PROJECT {
+        int project_id PK
+        string project_name
+        int researcher_id FK
+        int committee_id FK
+        int proposal_file_id "ไฟล์ .docx"
+        int plan_id FK
+        string status
+    }
+    PROPOSAL {
+        int proposal_file_id PK "ไฟล์ .docx"
+    }
+    PLAN {
+        int plan_id PK
+        string title
+    }
+    TASK {
+        int task_id PK
+        int plan_id FK
+        string details
+        date deadline_start
+        date deadline_end
+        int progress_percent
+        int proposal_file_id "ไฟล์ .docx ที่ส่ง"
+        int project_id FK
+        string status
+    }
+    NOTIFICATION {
+        int notification_id PK
+        int user_id FK
+        string message
+        bool is_read
+    }
+  </div>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+</body>
+</html>
