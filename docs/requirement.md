@@ -51,7 +51,7 @@
 
 ## 6. รายการฟังก์ชัน (Use Cases) แยกตามบทบาท
 
-📊 [ดู Use Case Diagram](diagrams/use-case.html)
+📊 Story Map แยกตามบทบาท: [Researcher](diagrams/story-map-researcher.html) · [Committee](diagrams/story-map-committee.html) · [Admin](diagrams/story-map-admin.html)
 
 - AI Assistant เป็นระบบภายนอก (3rd Party: OpenRouter) ไม่ใช่ผู้ใช้ที่ login เข้าระบบ — ทำงานผ่านการเรียก API
 - ขัดแย้งกับตารางใน §2 ที่ระบุว่า Admin ❌ ไม่มี AI แต่ diagram ให้ Admin มี Generate plan → รอยืนยัน (ดู Open Items ข้อ 4)
@@ -60,7 +60,9 @@
 
 ลำดับชั้น: **Project → Proposal (ไฟล์ .docx) → Plan (แผนรายสัปดาห์) → Task**
 
-📊 [ดู ER Diagram](diagrams/er-diagram.html)
+📊 [ดู Data Model](diagrams/data-model.html)
+
+📚 เอกสารอ้างอิง: [maDMP ER Explained](ref/madmp-er-explained.html) · [RDA DMP ER Explained](ref/rda-dmp-er-explained.html)
 
 **การทำงานของ AI (Gen / Update / Recheck):**
 
